@@ -1,7 +1,7 @@
 <template>
 	<section class="hero">
 		<div class="container hero__container">
-			<HeroFilters />
+			<HeroFilters @update-slider="updateSlider" />
 			<div class="hero__table">
 				<div class="hero__header">
 					<div class="hero__row">
@@ -20,7 +20,7 @@
 					<div class="swiper-wrapper hero__wrapper-main">
 						<div class="swiper-slide" v-for="(slide, idx) in this.$store.state.preparedSlides" :key="idx">
 							<div class="hero__row" v-for="(row, idx) in slide" :key="idx">
-								<div class="hero__cell hero__col-name">{{ row.name }}</div>
+								<div class="hero__cell hero__col-name">{{ row.name }} {{ row.id }}</div>
 								<div class="hero__cell hero__col-phone">
 									<a href="tel:+79080788723">{{ row.phone }}</a>
 								</div>
@@ -197,9 +197,13 @@ export default {
 				});
 			}
 		},
+		updateSlider() {
+			this.mainSlider.slideTo(0, 1000);
+			this.makeSlider();
+		},
 	},
 	mounted() {
-		this.$store.commit("makePreparedSlides", this.slidesCount);
+		this.$store.commit("makePreparedSlides");
 		if (this.$store.state.rowsPerSlide < this.$store.state.rowsData.length) {
 			this.makeSlider();
 		}
@@ -208,17 +212,19 @@ export default {
 		}, 0);
 	},
 	computed: {
-		slidesCount() {
-			return this.$store.getters.slidesCount;
-		},
 		rowsPerSlide() {
 			return this.$store.state.rowsPerSlide;
 		},
 	},
 	watch: {
 		rowsPerSlide() {
+			this.mainSlider.slideTo(0, 1000);
 			this.$store.commit("clearPreparedSlides");
-			this.$store.commit("makePreparedSlides", this.slidesCount);
+			// if (this.$store.state.currentFilters.length > 0) {
+			this.$store.commit("makeFilteredSlides");
+			// } else {
+			// 	this.$store.commit("makePreparedSlides");
+			// }
 			this.makeSlider();
 		},
 	},

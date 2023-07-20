@@ -44,7 +44,7 @@
 									type="checkbox"
 									:value="{ category: category.en, value: item }"
 									:id="item + idx"
-									@change="console.log({ category: category.en, value: item })"
+									@change="newFilterHandler({ category: category.en, value: item })"
 								/>
 								<label class="filters__label" :for="item + idx"></label>
 								{{ item }}
@@ -54,8 +54,8 @@
 				</div>
 			</div>
 			<div class="filters__container-buttons">
-				<button class="filters__button filters__button-clear">Сбросить</button>
-				<button class="filters__button filters__button-apply">Применить</button>
+				<button class="filters__button filters__button-clear" @click="removeAllFilters()">Сбросить</button>
+				<button class="filters__button filters__button-apply" @click="filterRowsData()">Применить</button>
 			</div>
 		</div>
 	</div>
@@ -75,6 +75,7 @@ export default {
 	components: {
 		simplebar,
 	},
+	emits: ["updateSlider"],
 	methods: {
 		getUniqueItems(category) {
 			const result = this.$store.state.rowsData.reduce((acc, item) => {
@@ -85,8 +86,59 @@ export default {
 			}, []);
 			return result;
 		},
+		newFilterHandler(filterData) {
+			let filterIndex = this.checkExistingFilter(filterData);
+			if (filterIndex == -1) {
+				this.$store.commit("addNewFilter", filterData);
+			} else {
+				this.$store.commit("deleteOldFilter", filterData, filterIndex);
+			}
+			// let filterIndexGroup = this.checkExistingFilterGroup(filterData.category);
+			// if (filterIndexGroup == -1) {
+			// 	console.log("нет такого");
+			// 	this.$store.commit("deleteNewFilterGroup", filterData.category);
+			// } else {
+			// 	console.log("есть такое");
+			// 	this.$store.commit("addNewFilterGroup", filterData.category);
+			// }
+		},
+		checkExistingFilter(filterData) {
+			let index = this.$store.state.filterModel[filterData.category].findIndex((filter) => {
+				return filter == filterData.value;
+			});
+			return index;
+		},
+		// checkExistingFilterGroup(category) {
+		// 	let index = this.$store.state.currentFiltersGroups.findIndex((el) => {
+		// 		return el == category;
+		// 	});
+		// 	return index;
+		// },
+		removeAllFilters() {
+			this.$store.commit("clearFilterModel");
+			this.removeAllChecked();
+			this.updateSlider();
+		},
+		filterRowsData() {
+			this.updateSlider();
+		},
+		removeAllChecked() {
+			const mainList = document.querySelector(".filters__list");
+			const checkboxes = mainList.querySelectorAll(".filters__checkbox:checked");
+			checkboxes.forEach((checkbox) => {
+				checkbox.click();
+			});
+		},
+		updateSlider() {
+			this.$store.commit("clearPreparedSlides");
+			// if (this.$store.state.currentFilters.length > 0) {
+			this.$store.commit("makeFilteredSlides");
+			// } else {
+			// 	this.$store.commit("makePreparedSlides");
+			// }
+			this.$emit("updateSlider");
+		},
 	},
-	mounted() {},
 };
 </script>
 
@@ -121,7 +173,6 @@ export default {
 		&-hidden {
 		}
 	}
-
 	&__input {
 		&-search {
 			width: 100%;
@@ -242,6 +293,7 @@ export default {
 		color: var(--white-color);
 		border: 0;
 		outline: 0;
+		cursor: pointer;
 		&-clear {
 			background: #e15335;
 		}
