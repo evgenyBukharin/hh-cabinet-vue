@@ -1,7 +1,7 @@
 <template>
 	<section class="hero">
 		<div class="container hero__container">
-			<HeroFilters @update-slider="updateSlider" />
+			<HeroFilters />
 			<div class="hero__table">
 				<div class="hero__header">
 					<div class="hero__row">
@@ -16,36 +16,42 @@
 						<div class="hero__cell hero__cell-header hero__cell-header-hide hero__col-hide">Скрыть</div>
 					</div>
 				</div>
-				<div class="hero__body swiper">
-					<div class="swiper-wrapper hero__wrapper-main">
-						<div class="swiper-slide" v-for="(slide, idx) in this.$store.state.preparedSlides" :key="idx">
-							<div class="hero__row" v-for="(row, idx) in slide" :key="idx">
-								<div class="hero__cell hero__col-name">{{ row.name }} {{ row.id }}</div>
-								<div class="hero__cell hero__col-phone">
-									<a href="tel:+79080788723">{{ row.phone }}</a>
-								</div>
-								<div class="hero__cell hero__col-job">{{ row.job }}</div>
-								<div class="hero__cell hero__col-vacancy">{{ row.vacancy }}</div>
-								<div class="hero__cell hero__col-salary">{{ row.salary }}</div>
-								<div class="hero__cell hero__col-city">{{ row.city }}</div>
-								<div class="hero__cell hero__col-link"><a href="#">Перейти</a></div>
-								<div class="hero__cell hero__col-crm">
-									<a class="hero__container-button">
-										<svg class="hero__icon-plus">
-											<use xlink:href="../img/sprite.svg#plus"></use>
-										</svg>
-										<span class="hero__text-crm">CRM</span>
-									</a>
-								</div>
-								<div class="hero__cell hero__col-hide">
-									<svg class="hero__icon-minus">
-										<use xlink:href="../img/sprite.svg#minus"></use>
+				<swiper
+					:modules="modules"
+					:navigation="mainSliderOptions.navigation"
+					:pagination="mainSliderOptions.pagination"
+					:thumbs="{ swiper: thumbsSwiper }"
+					:slides-per-view="mainSliderOptions.slidesPerView"
+					:speed="mainSliderOptions.speed"
+					@swiper="setMainSwiper"
+				>
+					<swiper-slide v-for="(slide, idx) in $store.state.preparedSlides" :key="idx">
+						<div class="hero__row" v-for="(row, idx) in slide" :key="idx">
+							<div class="hero__cell hero__col-name">{{ row.name }} {{ row.id }}</div>
+							<div class="hero__cell hero__col-phone">
+								<a href="tel:+79080788723">{{ row.phone }}</a>
+							</div>
+							<div class="hero__cell hero__col-job">{{ row.job }}</div>
+							<div class="hero__cell hero__col-vacancy">{{ row.vacancy }}</div>
+							<div class="hero__cell hero__col-salary">{{ row.salary }}</div>
+							<div class="hero__cell hero__col-city">{{ row.city }}</div>
+							<div class="hero__cell hero__col-link"><a href="#">Перейти</a></div>
+							<div class="hero__cell hero__col-crm">
+								<a class="hero__container-button">
+									<svg class="hero__icon-plus">
+										<use xlink:href="../img/sprite.svg#plus"></use>
 									</svg>
-								</div>
+									<span class="hero__text-crm">CRM</span>
+								</a>
+							</div>
+							<div class="hero__cell hero__col-hide">
+								<svg class="hero__icon-minus">
+									<use xlink:href="../img/sprite.svg#minus"></use>
+								</svg>
 							</div>
 						</div>
-					</div>
-				</div>
+					</swiper-slide>
+				</swiper>
 				<div class="hero__footer">
 					<p class="hero__text-all hero__text-footer">
 						Всего:
@@ -54,33 +60,40 @@
 					<div class="hero__text-pages hero__text-footer">
 						<span class="hero__text-page">
 							Страницы:
-							<span
-								class="hero__text-page"
-								v-if="$store.state.rowsPerSlide >= this.$store.state.rowsData.length"
-								>1</span
-							>
+							<span class="hero__text-page" v-show="$store.state.preparedSlides.length <= 1">1</span>
 						</span>
 						<button
 							class="btn-reset hero__button-control hero__button-prev"
-							v-if="$store.state.rowsPerSlide < this.$store.state.rowsData.length"
+							v-show="$store.state.preparedSlides.length > 1"
 						>
 							Пред
 						</button>
-						<div class="swiper hero__slider-pagination">
-							<div
-								class="hero__pagination swiper-wrapper"
-								v-if="$store.state.rowsPerSlide < this.$store.state.rowsData.length"
-							></div>
-						</div>
+						<swiper
+							class="hero__slider-pagination"
+							v-show="$store.state.preparedSlides.length > 1"
+							:slides-per-view="bulletsSliderOptions.slidesPerView"
+							:speed="bulletsSliderOptions.speed"
+							:space-between="bulletsSliderOptions.spaceBetween"
+							:clickable="bulletsSliderOptions.clickable"
+							:centered-slides="bulletsSliderOptions.centeredSlides"
+							:navigation="bulletsSliderOptions.navigation"
+							wrapper-class="hero__pagination swiper-wrapper"
+							:modules="modules"
+							watchSlidesProgress
+							@swiper="setThumbsSwiper"
+						>
+						</swiper>
 						<button
 							class="btn-reset hero__button-control hero__button-next"
-							v-if="$store.state.rowsPerSlide < this.$store.state.rowsData.length"
+							v-show="$store.state.preparedSlides.length > 1"
 						>
 							След.
 						</button>
+
 						<button
 							class="btn-reset hero__button-control hero__button-last"
-							v-if="$store.state.rowsPerSlide < this.$store.state.rowsData.length"
+							v-show="$store.state.preparedSlides.length > 1"
+							@click="moveToLastSlide"
 						>
 							Последняя
 						</button>
@@ -101,8 +114,11 @@
 
 <script>
 import HeroFilters from "./HeroFilters.vue";
-import Swiper from "swiper";
-import { Navigation, Pagination, Thumbs } from "swiper/modules";
+
+import { ref } from "vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination, Thumbs, Controller } from "swiper/modules";
+
 import "swiper/css/bundle";
 
 export default {
@@ -110,29 +126,10 @@ export default {
 	data() {
 		return {
 			mainSlider: null,
-		};
-	},
-	components: { HeroFilters },
-	methods: {
-		makeSlider() {
-			const bulletsSliderElement = document.querySelector(".hero__slider-pagination");
-			const bulletsSlider = new Swiper(bulletsSliderElement, {
-				slidesPerView: 3,
-				speed: 600,
-				spaceBetween: 26,
-				clickable: true,
-				centeredSlides: true,
-				navigation: {
-					nextEl: ".hero__button-next",
-					prevEl: ".hero__button-prev",
-				},
-			});
-			bulletsSlider.activeIndex = 1;
-
-			this.mainSlider = new Swiper(document.querySelector(".hero__body"), {
+			bulletsSlider: null,
+			mainSliderOptions: {
 				slidesPerView: 1,
 				speed: 700,
-				modules: [Navigation, Pagination, Thumbs],
 				pagination: {
 					el: ".hero__pagination",
 					clickable: true,
@@ -145,18 +142,42 @@ export default {
 					prevEl: ".hero__button-prev",
 				},
 				thumbs: {
-					swiper: bulletsSlider,
+					swiper: this.bulletsSlider,
 				},
-			});
-
-			const lastButton = document.querySelector(".hero__button-last");
-			lastButton.addEventListener("click", () => {
-				this.mainSlider.slideTo(
-					document.querySelector(".hero__wrapper-main").querySelectorAll(".swiper-slide").length - 1,
-					1000
-				);
-			});
-		},
+			},
+			bulletsSliderOptions: {
+				slidesPerView: 3,
+				speed: 600,
+				spaceBetween: 26,
+				clickable: true,
+				centeredSlides: true,
+				navigation: {
+					nextEl: ".hero__button-next",
+					prevEl: ".hero__button-prev",
+				},
+			},
+			modules: [Navigation, Pagination, Thumbs, Controller],
+		};
+	},
+	components: { HeroFilters, Swiper, SwiperSlide },
+	setup() {
+		const thumbsSwiper = ref(null);
+		const mainSwiper = ref(null);
+		const setThumbsSwiper = (swiper) => {
+			thumbsSwiper.value = swiper;
+		};
+		const setMainSwiper = (swiper) => {
+			mainSwiper.value = swiper;
+		};
+		return {
+			Thumbs,
+			thumbsSwiper,
+			setThumbsSwiper,
+			mainSwiper,
+			setMainSwiper,
+		};
+	},
+	methods: {
 		makeHovers() {
 			const names = document.querySelectorAll(".hero__col-name");
 			const phones = document.querySelectorAll(".hero__col-phone");
@@ -197,16 +218,13 @@ export default {
 				});
 			}
 		},
-		updateSlider() {
-			this.mainSlider.slideTo(0, 1000);
-			this.makeSlider();
+		moveToLastSlide() {
+			const bullets = document.querySelectorAll(".hero__bullet");
+			bullets[bullets.length - 1].click();
 		},
 	},
 	mounted() {
 		this.$store.commit("makePreparedSlides");
-		if (this.$store.state.rowsPerSlide < this.$store.state.rowsData.length) {
-			this.makeSlider();
-		}
 		setTimeout(() => {
 			this.makeHovers();
 		}, 0);
@@ -218,14 +236,12 @@ export default {
 	},
 	watch: {
 		rowsPerSlide() {
-			this.mainSlider.slideTo(0, 1000);
 			this.$store.commit("clearPreparedSlides");
-			// if (this.$store.state.currentFilters.length > 0) {
-			this.$store.commit("makeFilteredSlides");
-			// } else {
-			// 	this.$store.commit("makePreparedSlides");
-			// }
-			this.makeSlider();
+			if (this.$store.getters.isModelEmpty) {
+				this.$store.commit("makePreparedSlides");
+			} else {
+				this.$store.commit("makeFilteredSlides");
+			}
 		},
 	},
 };

@@ -199,7 +199,7 @@ export default createStore({
 				city: "Москва",
 			},
 			{
-				id: 18,
+				id: 19,
 				name: "Иванов Евгений Иванович",
 				phone: "+7 (908) 078 87 23",
 				job: "Педиатор",
@@ -208,6 +208,17 @@ export default createStore({
 				city: "Нью-Йорк",
 			},
 		],
+	},
+	getters: {
+		isModelEmpty(state) {
+			const values = Object.values(state.filterModel);
+			for (let i = 0; i < values.length; i++) {
+				if (values[i].length == 0) {
+					return true;
+				}
+				return false;
+			}
+		},
 	},
 	mutations: {
 		makePreparedSlides(state) {
@@ -221,11 +232,9 @@ export default createStore({
 		},
 		addNewFilter(state, filterData) {
 			state.filterModel[filterData.category].push(filterData.value);
-			console.log(state.filterModel);
 		},
 		deleteOldFilter(state, filterData, idx) {
 			state.filterModel[filterData.category].splice(idx, 1);
-			console.log(state.filterModel);
 		},
 		makeFilteredSlides(state) {
 			let matchedRowData = [];
@@ -246,7 +255,6 @@ export default createStore({
 					}
 				}
 			}
-			console.log(matchedRowData);
 
 			let keys = Object.keys(state.filterModel);
 			let nextCategory = keys[keys.indexOf(lastFilteredKey) + 1];
@@ -264,9 +272,6 @@ export default createStore({
 				filteredData = matchedRowData;
 			}
 			lastFilteredKey = nextCategory;
-			console.log(filteredData);
-			// if (filteredData.length == 0) {
-			// }
 
 			let lastFilteredData = [];
 			nextCategory = keys[keys.indexOf(lastFilteredKey) + 1];
@@ -281,13 +286,6 @@ export default createStore({
 			} else {
 				lastFilteredData = filteredData;
 			}
-			console.log(lastFilteredData);
-			// if (lastFilteredData.length == 0) {
-			// }
-			// console.log("Модель");
-			// console.log(state.filterModel);
-			// console.log("Данные");
-			// console.log(lastFilteredData);
 
 			for (let i = 0; i < lastFilteredData.length; i += state.rowsPerSlide) {
 				const chunk = lastFilteredData.slice(i, i + state.rowsPerSlide);
