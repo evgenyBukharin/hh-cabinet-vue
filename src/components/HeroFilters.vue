@@ -120,6 +120,8 @@ export default {
 		},
 		updateSlider() {
 			this.$store.commit("clearPreparedSlides");
+			console.log(this.$store.getters.isModelEmpty);
+			console.log(this.$store.state.filterModel);
 			if (this.$store.getters.isModelEmpty) {
 				this.$store.commit("makePreparedSlides");
 			} else {

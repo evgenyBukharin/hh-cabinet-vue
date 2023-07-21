@@ -213,11 +213,11 @@ export default createStore({
 		isModelEmpty(state) {
 			const values = Object.values(state.filterModel);
 			for (let i = 0; i < values.length; i++) {
-				if (values[i].length == 0) {
-					return true;
+				if (values[i].length !== 0) {
+					return false;
 				}
-				return false;
 			}
+			return true;
 		},
 	},
 	mutations: {
