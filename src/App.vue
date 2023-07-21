@@ -25,6 +25,7 @@ export default {
 	--green-color: #299b9c;
 	--blue-color: #254580;
 	--border-color: #e153351a;
+	--orange-color: #e15335;
 	--light-green-color: rgba(41, 155, 156, 0.25);
 }
 @font-face {

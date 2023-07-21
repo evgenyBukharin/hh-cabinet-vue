@@ -12,6 +12,7 @@ export default createStore({
 			job: [],
 			city: [],
 		},
+		selectedStatus: "123",
 		categotyFilterList: [
 			{
 				en: "vacancy",
@@ -35,6 +36,7 @@ export default createStore({
 				vacancy: "Врач-невролог 1",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 1,
@@ -44,6 +46,7 @@ export default createStore({
 				vacancy: "Врач-невролог 2",
 				salary: "60 000",
 				city: "Екатеринбург",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 2,
@@ -53,6 +56,7 @@ export default createStore({
 				vacancy: "Врач-невролог 2",
 				salary: "60 000",
 				city: "Алматы",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 3,
@@ -62,6 +66,7 @@ export default createStore({
 				vacancy: "Врач-невролог 2",
 				salary: "60 000",
 				city: "Екатеринбург",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 4,
@@ -71,6 +76,7 @@ export default createStore({
 				vacancy: "Врач-невролог 2",
 				salary: "60 000",
 				city: "Москва",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 5,
@@ -80,6 +86,7 @@ export default createStore({
 				vacancy: "Врач-невролог 2",
 				salary: "60 000",
 				city: "Екатеринбург",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 6,
@@ -89,6 +96,7 @@ export default createStore({
 				vacancy: "Врач-невролог 3",
 				salary: "60 000",
 				city: "Алматы",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 7,
@@ -98,6 +106,7 @@ export default createStore({
 				vacancy: "Врач-невролог 2",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 8,
@@ -107,6 +116,7 @@ export default createStore({
 				vacancy: "Врач-невролог",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 9,
@@ -116,6 +126,7 @@ export default createStore({
 				vacancy: "Врач-невролог",
 				salary: "60 000",
 				city: "Алматы",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 10,
@@ -125,6 +136,7 @@ export default createStore({
 				vacancy: "Врач-невролог",
 				salary: "60 000",
 				city: "Алматы",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 11,
@@ -134,6 +146,7 @@ export default createStore({
 				vacancy: "Врач-невролог",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 12,
@@ -143,6 +156,7 @@ export default createStore({
 				vacancy: "Врач-невролог",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 13,
@@ -152,6 +166,7 @@ export default createStore({
 				vacancy: "Врач-невролог",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 14,
@@ -161,6 +176,7 @@ export default createStore({
 				vacancy: "Врач-невролог",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 15,
@@ -170,6 +186,7 @@ export default createStore({
 				vacancy: "Врач-невролог",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 16,
@@ -179,6 +196,7 @@ export default createStore({
 				vacancy: "Врач-невролог 3",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 17,
@@ -188,6 +206,7 @@ export default createStore({
 				vacancy: "Врач-невролог 3",
 				salary: "60 000",
 				city: "Челябинск",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 18,
@@ -197,6 +216,7 @@ export default createStore({
 				vacancy: "Врач-невролог 3",
 				salary: "60 000",
 				city: "Москва",
+				hhLink: "https://google.com",
 			},
 			{
 				id: 19,
@@ -206,6 +226,7 @@ export default createStore({
 				vacancy: "Врач-невролог 3",
 				salary: "60 000",
 				city: "Нью-Йорк",
+				hhLink: "https://google.com",
 			},
 		],
 	},

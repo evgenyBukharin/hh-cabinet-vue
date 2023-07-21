@@ -5,15 +5,21 @@
 			<div class="hero__table">
 				<div class="hero__header">
 					<div class="hero__row">
-						<div class="hero__cell hero__cell-header hero__cell-header-name hero__col-name">Имя</div>
+						<div class="hero__cell hero__cell-header hero__col-vacancy">Вакансия</div>
+						<div class="hero__cell hero__cell-header hero__cell-header-name hero__col-name">ФИО</div>
 						<div class="hero__cell hero__cell-header hero__col-phone">Телефон</div>
 						<div class="hero__cell hero__cell-header hero__col-job">Должность</div>
-						<div class="hero__cell hero__cell-header hero__col-vacancy">Вакансия</div>
 						<div class="hero__cell hero__cell-header hero__col-salary">ЗП</div>
 						<div class="hero__cell hero__cell-header hero__col-city">Город</div>
-						<div class="hero__cell hero__cell-header hero__col-link">Ссылка</div>
-						<div class="hero__cell hero__cell-header hero__cell-header-crm hero__col-crm">CRM</div>
-						<div class="hero__cell hero__cell-header hero__cell-header-hide hero__col-hide">Скрыть</div>
+						<div class="hero__cell hero__cell-header hero__cell-header-buttons hero__col-buttons">
+							<input
+								class="hero__input-checkbox"
+								type="checkbox"
+								id="switch"
+								v-model="switchText"
+							/><label class="hero__label" for="switch"> Toggle </label>
+							<span class="hero__text-buttons">{{ actualText[switchText] }}</span>
+						</div>
 					</div>
 				</div>
 				<swiper
@@ -27,27 +33,62 @@
 				>
 					<swiper-slide v-for="(slide, idx) in $store.state.preparedSlides" :key="idx">
 						<div class="hero__row" v-for="(row, idx) in slide" :key="idx">
-							<div class="hero__cell hero__col-name">{{ row.name }} {{ row.id }}</div>
+							<div class="hero__cell hero__col-vacancy">{{ row.vacancy }}</div>
+							<div class="hero__cell hero__col-name">{{ row.name }}</div>
 							<div class="hero__cell hero__col-phone">
 								<a href="tel:+79080788723">{{ row.phone }}</a>
 							</div>
 							<div class="hero__cell hero__col-job">{{ row.job }}</div>
-							<div class="hero__cell hero__col-vacancy">{{ row.vacancy }}</div>
 							<div class="hero__cell hero__col-salary">{{ row.salary }}</div>
 							<div class="hero__cell hero__col-city">{{ row.city }}</div>
-							<div class="hero__cell hero__col-link"><a href="#">Перейти</a></div>
-							<div class="hero__cell hero__col-crm">
-								<a class="hero__container-button">
-									<svg class="hero__icon-plus">
-										<use xlink:href="../img/sprite.svg#plus"></use>
-									</svg>
-									<span class="hero__text-crm">CRM</span>
+							<div class="hero__cell hero__col-buttons">
+								<a
+									:href="row.hhLink"
+									class="hero__container-button"
+									@mouseenter="toggleActive"
+									@mouseleave="toggleActive"
+								>
+									<div class="hero__container-icon">
+										<svg
+											viewBox="0 0 25 25"
+											class="hero__icon-user"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<rect width="25" height="25" rx="5" />
+											<path
+												class="hero__icon-user-inner"
+												d="M12.6 14.222c3.037 0 5.6.493 5.6 2.397 0 1.905-2.58 2.381-5.6 2.381-3.036 0-5.6-.494-5.6-2.398 0-1.904 2.58-2.38 5.6-2.38zM12.6 5a3.691 3.691 0 013.706 3.704 3.692 3.692 0 01-3.706 3.704 3.692 3.692 0 01-3.706-3.704A3.692 3.692 0 0112.6 5z"
+											/>
+										</svg>
+									</div>
+									<div class="hero__container-button-inner">Перейти</div>
 								</a>
-							</div>
-							<div class="hero__cell hero__col-hide">
-								<svg class="hero__icon-minus">
-									<use xlink:href="../img/sprite.svg#minus"></use>
-								</svg>
+								<a
+									href="https://google.com"
+									class="hero__container-button hero__container-button-active"
+									@mouseenter="toggleActive"
+									@mouseleave="toggleActive"
+								>
+									<div class="hero__container-icon">
+										<svg class="hero__icon-plus">
+											<use xlink:href="../img/sprite.svg#plus"></use>
+										</svg>
+									</div>
+									<div class="hero__container-button-inner">CRM</div>
+								</a>
+								<a
+									href="https://google.com"
+									class="hero__container-button"
+									@mouseenter="toggleActive"
+									@mouseleave="toggleActive"
+								>
+									<div class="hero__container-icon">
+										<svg class="hero__icon-minus">
+											<use xlink:href="../img/sprite.svg#minus"></use>
+										</svg>
+									</div>
+									<div class="hero__container-button-inner">Скрыть</div>
+								</a>
 							</div>
 						</div>
 					</swiper-slide>
@@ -125,8 +166,11 @@ export default {
 	name: "HeroMain",
 	data() {
 		return {
-			mainSlider: null,
-			bulletsSlider: null,
+			switchText: false,
+			actualText: {
+				true: "Актуальные отклики",
+				false: "Скрытые отклики",
+			},
 			mainSliderOptions: {
 				slidesPerView: 1,
 				speed: 700,
@@ -185,11 +229,9 @@ export default {
 			const vacancy = document.querySelectorAll(".hero__col-vacancy");
 			const salaries = document.querySelectorAll(".hero__col-salary");
 			const cities = document.querySelectorAll(".hero__col-city");
-			const links = document.querySelectorAll(".hero__col-link");
-			const crms = document.querySelectorAll(".hero__col-crm");
-			const hides = document.querySelectorAll(".hero__col-hide");
+			const buttons = document.querySelectorAll(".hero__col-buttons");
 
-			const cols = [names, phones, jobs, vacancy, salaries, cities, links, crms, hides];
+			const cols = [names, phones, jobs, vacancy, salaries, cities, buttons];
 
 			for (let i = 0; i < cols.length; i++) {
 				cols[i].forEach((hoverElement) => {
@@ -221,6 +263,16 @@ export default {
 		moveToLastSlide() {
 			const bullets = document.querySelectorAll(".hero__bullet");
 			bullets[bullets.length - 1].click();
+		},
+		toggleActive(event) {
+			const hoveredButton = event.target;
+			if (!hoveredButton.classList.contains("hero__container-button-active")) {
+				let children = hoveredButton.parentNode.querySelectorAll(".hero__container-button");
+				children.forEach((child) => {
+					child.classList.remove("hero__container-button-active");
+				});
+				hoveredButton.classList.add("hero__container-button-active");
+			}
 		},
 	},
 	mounted() {
@@ -256,45 +308,39 @@ export default {
 	padding-bottom: 50px;
 	&__container {
 		&-button {
-			position: relative;
 			display: flex;
 			align-items: center;
-			justify-content: center;
-			padding: 2px;
-			padding-left: 4px;
-			padding-right: 11px;
-			border: 1px solid var(--border-color);
-			border-radius: 5px;
-			margin-top: -1px;
+			font-size: 10px !important;
+			font-weight: 600 !important;
+			line-height: 12px !important;
+			color: var(--black-color) !important;
+			text-align: center;
+			max-width: 100px;
+			width: 25px;
 			cursor: pointer;
-			&:hover {
-				&::after {
-					transform: translate(0, 0);
+			overflow: hidden;
+			transition: width 0.2s linear;
+			border: 1px solid var(--green-color);
+			border-radius: 5px;
+			height: 25px;
+			&-active {
+				width: 100px;
+				& .hero__container-button-inner {
 					opacity: 1;
 				}
-				& .hero__icon-plus {
-					fill: var(--white-color);
-				}
-				& .hero__icon-minus {
-					fill: var(--white-color);
-				}
-				& .hero__text-crm {
-					color: var(--white-color);
-				}
-				& .hero__text-hide {
-					color: var(--white-color);
-				}
 			}
-			&::after {
-				content: "";
-				position: absolute;
-				inset: 0;
-				border-radius: 5px;
-				background: var(--green-color);
-				transform: translate(4px, 4px);
+			&-inner {
+				text-align: center;
+				position: relative;
+				z-index: 50;
+				width: 75px;
+				transition: opacity 0.2s linear 0.2s;
 				opacity: 0;
-				transition: opacity 0.4s, transform 0.4s;
 			}
+		}
+		&-icon {
+			// background: var(--green-color);
+			height: 100%;
 		}
 	}
 	&__table {
@@ -315,6 +361,16 @@ export default {
 			&:last-child {
 				border-top-right-radius: 5px;
 				border-bottom-right-radius: 5px;
+			}
+		}
+		& .hero__row {
+			& .hero__cell {
+				&:first-child {
+					border-left: 1px solid var(--green-color) !important;
+				}
+				&:last-child {
+					border-right: 1px solid var(--green-color) !important;
+				}
 			}
 		}
 	}
@@ -339,15 +395,10 @@ export default {
 			padding-bottom: 20px;
 			color: var(--white-color);
 			justify-content: center;
-			&-crm {
-				color: transparent;
-				pointer-events: none;
-				user-select: none;
-			}
-			&-hide {
-				color: transparent;
-				pointer-events: none;
-				user-select: none;
+			border: 1px solid var(--green-color);
+			&-buttons {
+				background: var(--white-color);
+				border-radius: 5px;
 			}
 			&-hide-after {
 				&::after {
@@ -382,9 +433,15 @@ export default {
 	}
 	&__col {
 		box-sizing: border-box;
+		&-vacancy {
+			box-sizing: border-box;
+			max-width: 240px;
+			width: 100%;
+			justify-content: center;
+		}
 		&-name {
 			box-sizing: border-box;
-			text-align: left;
+			text-align: center;
 			max-width: 200px;
 			width: 100%;
 		}
@@ -397,43 +454,69 @@ export default {
 		}
 		&-job {
 			box-sizing: border-box;
-			max-width: 180px;
-			width: 100%;
-			justify-content: center;
-		}
-		&-vacancy {
-			box-sizing: border-box;
-			max-width: 180px;
+			max-width: 240px;
 			width: 100%;
 			justify-content: center;
 		}
 		&-salary {
 			box-sizing: border-box;
-			max-width: 90px;
+			max-width: 80px;
 			width: 100%;
 			justify-content: center;
 		}
 		&-city {
 			box-sizing: border-box;
-			max-width: 180px;
+			max-width: 170px;
 			width: 100%;
 			justify-content: center;
 		}
-		&-link {
+		&-buttons {
+			position: relative;
 			box-sizing: border-box;
-			max-width: 100px;
+			max-width: 190px;
+			min-width: 190px;
 			width: 100%;
-			justify-content: center;
-		}
-		&-crm {
-			box-sizing: border-box;
-			max-width: 85px;
-			width: 100%;
-		}
-		&-hide {
-			box-sizing: border-box;
-			max-width: 110px;
-			width: 100%;
+			display: flex;
+			gap: 10px;
+			padding-left: 15px;
+			& .hero__label {
+				cursor: pointer;
+				text-indent: -9999px;
+				min-width: 40px;
+				min-height: 20px;
+				width: 40px;
+				height: 20px;
+				display: block;
+				background: var(--white-color);
+				position: relative;
+				border: 1px solid var(--orange-color);
+				border-radius: 5px;
+				&::after {
+					content: "";
+					position: absolute;
+					top: 0;
+					left: -1px;
+					width: 20px;
+					height: 100%;
+					background: var(--orange-color);
+					border-radius: 5px;
+					transition: 0.3s;
+				}
+			}
+			& .hero__input {
+				&-checkbox {
+					position: absolute;
+					top: -1px;
+					left: -1px;
+					height: 0;
+					width: 0;
+					visibility: hidden;
+					&:checked + label:after {
+						left: calc(100% + 2px);
+						transform: translateX(-100%);
+					}
+				}
+			}
 		}
 	}
 	&__row {
@@ -454,33 +537,51 @@ export default {
 	}
 	&__icon {
 		&-plus {
-			position: relative;
-			width: 13.727px;
-			height: 13.727px;
+			min-width: 25px;
+			min-height: 25px;
+			width: 25px;
+			height: 25px;
 			fill: var(--green-color);
-			margin-right: 10px;
+			position: relative;
 			z-index: 100;
-			transition: fill 0.4s ease;
+			margin-left: -1px;
+			margin-top: -1px;
 		}
 		&-minus {
 			position: relative;
-			width: 19px;
-			height: 19px;
+			min-width: 25px;
+			min-height: 25px;
+			width: 25px;
+			height: 25px;
 			fill: var(--green-color);
-			margin-right: 10px;
 			z-index: 100;
-			transition: fill 0.4s ease;
+			margin-left: -1px;
+			margin-top: -1px;
+		}
+		&-user {
+			min-width: 25px;
+			min-height: 25px;
+			width: 25px;
+			height: 25px;
+			fill: var(--green-color);
+			position: relative;
+			z-index: 100;
+			margin-left: -1px;
+			margin-top: -1px;
+			&-inner {
+				fill: var(--white-color);
+			}
 		}
 	}
 	&__text {
-		&-crm {
-			position: relative;
-			z-index: 100;
-			transition: color 0.4s ease;
-			font-size: 12px;
+		&-buttons {
+			font-size: 10px;
 			font-weight: 700;
-			line-height: 15px;
-			margin-top: -0.5px;
+			line-height: 12px;
+			color: var(--orange-color);
+			min-width: 115px;
+			text-align: left;
+			white-space: nowrap;
 		}
 	}
 	&__slider {

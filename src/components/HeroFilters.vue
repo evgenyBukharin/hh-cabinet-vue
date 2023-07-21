@@ -20,15 +20,18 @@
 				:class="{ 'filters__container-filters-active': isInputActive }"
 				@click="isInputActive = !isInputActive"
 			>
+				<input type="text" class="filters__input-search" />
+			</div>
+			<div class="filters__container-statuses">
 				<input
 					type="text"
-					class="filters__input-search"
-					placeholder="Фильтр + поиск"
-					v-model="$store.state.searchPhrase"
+					readonly="readonly"
+					class="filters__input-select"
+					v-model="$store.state.selectedStatus"
 				/>
 			</div>
 		</div>
-		<div class="filters__container-main">
+		<div class="filters__container-main" :class="{ 'filters__container-main-active': isInputActive }">
 			<div class="filters__list">
 				<div class="filters__item" v-for="(category, idx) in $store.state.categotyFilterList" :key="idx">
 					<h4 class="filters__title filters__title-category">{{ category.ru }}</h4>
@@ -132,11 +135,11 @@ export default {
 
 <style lang="scss">
 .filters {
+	overflow: hidden;
 	margin-bottom: 25px;
 	&__container {
 		display: flex;
 		gap: 25px;
-		margin-bottom: 25px;
 		&-switch {
 			position: relative;
 			&-hidden {
@@ -153,12 +156,35 @@ export default {
 			gap: 25px;
 		}
 		&-main {
-			border: 1px solid var(--green-color);
 			border-radius: 10px;
-			padding: 20px;
-			padding-left: 25px;
+			max-height: 0;
+			border: 0;
+			padding: 0;
+			&-active {
+				border: 1px solid var(--green-color);
+				padding: 20px;
+				padding-left: 25px;
+				max-height: unset;
+				margin-top: 25px;
+			}
 		}
-		&-hidden {
+		&-statuses {
+			width: 100%;
+			height: 100%;
+			max-width: 300px;
+			position: relative;
+			cursor: pointer;
+			&::after {
+				content: "";
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+				right: 13px;
+				width: 25px;
+				height: 25px;
+				background: url("../img/triangle.svg") no-repeat;
+				background-position: center center;
+			}
 		}
 	}
 	&__input {
@@ -179,6 +205,19 @@ export default {
 				font-weight: 400;
 			}
 		}
+		&-select {
+			font-size: 18px;
+			font-weight: 400;
+			line-height: 22px;
+			text-align: center;
+			width: 100%;
+			height: 100%;
+			border-radius: 10px;
+			border: 1px solid var(--orange-color);
+			background: var(--white-color);
+			padding: 15px;
+			cursor: pointer;
+		}
 	}
 	&__title {
 		margin: 0;
@@ -190,15 +229,15 @@ export default {
 		}
 	}
 	&__list {
-		display: grid;
-		grid-template-columns: repeat(12, 1fr);
+		display: flex;
+		justify-content: space-between;
 		gap: 45px;
 		margin-bottom: 25px;
 	}
 	&__item {
 		display: flex;
 		gap: 25px;
-		grid-column: 4 span;
+		width: 100%;
 	}
 	&__categories {
 		border-radius: 10px;
@@ -206,6 +245,7 @@ export default {
 		background: var(--white-color);
 		padding: 10px;
 		width: 100%;
+		max-width: 280px;
 		& .filters__category {
 			&:not(:last-child) {
 				margin-bottom: 7px;
@@ -283,7 +323,7 @@ export default {
 		outline: 0;
 		cursor: pointer;
 		&-clear {
-			background: #e15335;
+			background: var(--orange-color);
 		}
 		&-apply {
 			background-color: var(--green-color);
@@ -351,7 +391,7 @@ export default {
 	bottom: 0;
 	background-color: var(--white-color);
 	transition: all 0.4s;
-	border: 1px solid #e15335;
+	border: 1px solid var(--orange-color);
 	border-radius: 10px;
 	display: flex;
 }
@@ -363,7 +403,7 @@ export default {
 	width: 50%;
 	left: -1px;
 	bottom: 0;
-	background: #e15335;
+	background: var(--orange-color);
 	transition: all 0.4s;
 }
 
