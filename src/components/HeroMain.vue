@@ -1,7 +1,7 @@
 <template>
 	<section class="hero">
 		<div class="container hero__container">
-			<HeroFilters />
+			<HeroFilters @redraw-slider="redrawSlider()" />
 			<div class="hero__table">
 				<div class="hero__header">
 					<div class="hero__row">
@@ -17,6 +17,7 @@
 								type="checkbox"
 								id="switch"
 								v-model="switchText"
+								@change="switchRowData()"
 							/><label class="hero__label" for="switch"> Toggle </label>
 							<span class="hero__text-buttons">{{ actualText[switchText] }}</span>
 						</div>
@@ -34,7 +35,7 @@
 					<swiper-slide v-for="(slide, idx) in $store.state.preparedSlides" :key="idx">
 						<div class="hero__row" v-for="(row, idx) in slide" :key="idx">
 							<div class="hero__cell hero__col-vacancy">{{ row.vacancy }}</div>
-							<div class="hero__cell hero__col-name">{{ row.name }}</div>
+							<div class="hero__cell hero__col-name">{{ row.id }} {{ row.name }}</div>
 							<div class="hero__cell hero__col-phone">
 								<a href="tel:+79080788723">{{ row.phone }}</a>
 							</div>
@@ -76,19 +77,30 @@
 									</div>
 									<div class="hero__container-button-inner">CRM</div>
 								</a>
-								<a
-									href="https://google.com"
+								<div
 									class="hero__container-button"
 									@mouseenter="toggleActive"
 									@mouseleave="toggleActive"
 								>
 									<div class="hero__container-icon">
-										<svg class="hero__icon-minus">
+										<svg v-if="$store.state.hideHiddenData" class="hero__icon-minus">
 											<use xlink:href="../img/sprite.svg#minus"></use>
 										</svg>
+										<svg v-else class="hero__icon-minus">
+											<use xlink:href="../img/sprite.svg#reverse-arrow"></use>
+										</svg>
 									</div>
-									<div class="hero__container-button-inner">Скрыть</div>
-								</a>
+									<div
+										class="hero__container-button-inner"
+										v-if="$store.state.hideHiddenData"
+										@click="hideRow(row.id)"
+									>
+										Скрыть
+									</div>
+									<div class="hero__container-button-inner" v-else @click="returnRow(row.id)">
+										Вернуть
+									</div>
+								</div>
 							</div>
 						</div>
 					</swiper-slide>
@@ -130,7 +142,6 @@
 						>
 							След.
 						</button>
-
 						<button
 							class="btn-reset hero__button-control hero__button-last"
 							v-show="$store.state.preparedSlides.length > 1"
@@ -168,8 +179,8 @@ export default {
 		return {
 			switchText: false,
 			actualText: {
-				true: "Актуальные отклики",
-				false: "Скрытые отклики",
+				false: "Актуальные отклики",
+				true: "Скрытые отклики",
 			},
 			mainSliderOptions: {
 				slidesPerView: 1,
@@ -274,9 +285,35 @@ export default {
 				hoveredButton.classList.add("hero__container-button-active");
 			}
 		},
+		hideRow(id) {
+			this.$store.commit("hideRow", id);
+			this.redrawSlider();
+		},
+		returnRow(id) {
+			this.$store.commit("returnRow", id);
+			this.redrawSlider();
+		},
+		switchRowData() {
+			this.$store.commit("switchRowData");
+			this.redrawSlider();
+		},
+		redrawSlider() {
+			this.$store.commit("clearPreparedSlides");
+			if (this.$store.state.selectedStatus !== "Все неразобранные") {
+				this.$store.commit("setNewFilterStatus", this.$store.state.selectedStatus);
+			} else {
+				this.$store.commit("clearFilterModelStatus");
+			}
+
+			if (this.$store.getters.isModelEmpty) {
+				this.$store.commit("makePreparedSlides", this.$store.state.rowsData);
+			} else {
+				this.$store.commit("makeFilteredSlides", this.$store.state.rowsData);
+			}
+		},
 	},
 	mounted() {
-		this.$store.commit("makePreparedSlides");
+		this.$store.commit("makePreparedSlides", this.$store.state.rowsData);
 		setTimeout(() => {
 			this.makeHovers();
 		}, 0);
@@ -288,12 +325,7 @@ export default {
 	},
 	watch: {
 		rowsPerSlide() {
-			this.$store.commit("clearPreparedSlides");
-			if (this.$store.getters.isModelEmpty) {
-				this.$store.commit("makePreparedSlides");
-			} else {
-				this.$store.commit("makeFilteredSlides");
-			}
+			this.redrawSlider();
 		},
 	},
 };
@@ -306,6 +338,7 @@ export default {
 .hero {
 	padding-top: 50px;
 	padding-bottom: 50px;
+	min-height: 700px;
 	&__container {
 		&-button {
 			display: flex;

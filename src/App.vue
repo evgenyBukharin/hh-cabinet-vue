@@ -10,6 +10,9 @@ export default {
 	components: {
 		HeroMain,
 	},
+	mounted() {
+		this.$store.commit("saveRowsData");
+	},
 };
 </script>
 
@@ -24,6 +27,7 @@ export default {
 	--black-color: #000;
 	--green-color: #299b9c;
 	--blue-color: #254580;
+	--light-blue-color: #81eaeb;
 	--border-color: #e153351a;
 	--orange-color: #e15335;
 	--light-green-color: rgba(41, 155, 156, 0.25);

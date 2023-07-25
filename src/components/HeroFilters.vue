@@ -15,20 +15,36 @@
 					</span>
 				</label>
 			</div>
-			<div
-				class="filters__container-filters"
-				:class="{ 'filters__container-filters-active': isInputActive }"
-				@click="isInputActive = !isInputActive"
-			>
-				<input type="text" class="filters__input-search" />
+			<div class="filters__container-filters" :class="{ 'filters__container-filters-active': isInputActive }">
+				<input
+					@click="isInputActive = true"
+					type="text"
+					class="filters__input-search"
+					placeholder="Фильтр + поиск"
+					v-model="$store.state.searchPhrase"
+					@keyup.enter="handleSearchInput()"
+				/>
+				<button class="filters__button-search" @click="handleSearchInput()">Найти</button>
 			</div>
 			<div class="filters__container-statuses">
 				<input
 					type="text"
 					readonly="readonly"
 					class="filters__input-select"
+					:class="{ 'filters__input-select-active': listVisiblity }"
 					v-model="$store.state.selectedStatus"
+					@click="toggleListVisibility()"
 				/>
+				<ul class="filters__list-select" :class="{ 'filters__list-select-active': listVisiblity }">
+					<li
+						class="filters__item-select"
+						v-for="(status, idx) in $store.state.statusesList"
+						:key="idx"
+						@click="setNewStatus(status)"
+					>
+						{{ status }}
+					</li>
+				</ul>
 			</div>
 		</div>
 		<div class="filters__container-main" :class="{ 'filters__container-main-active': isInputActive }">
@@ -77,11 +93,13 @@ export default {
 		return {
 			isSwitchActive: false,
 			isInputActive: false,
+			listVisiblity: false,
 		};
 	},
 	components: {
 		simplebar,
 	},
+	emits: ["redrawSlider"],
 	methods: {
 		getUniqueItems(category) {
 			const result = this.$store.state.rowsData.reduce((acc, item) => {
@@ -107,11 +125,13 @@ export default {
 			return index;
 		},
 		removeAllFilters() {
-			this.$store.commit("clearFilterModel");
 			this.removeAllChecked();
+			this.isInputActive = false;
+			this.$store.commit("clearFilterModel");
 			this.updateSlider();
 		},
 		filterRowsData() {
+			this.isInputActive = false;
 			this.updateSlider();
 		},
 		removeAllChecked() {
@@ -122,20 +142,42 @@ export default {
 			});
 		},
 		updateSlider() {
-			this.$store.commit("clearPreparedSlides");
-			if (this.$store.getters.isModelEmpty) {
-				this.$store.commit("makePreparedSlides");
-			} else {
-				this.$store.commit("makeFilteredSlides");
-			}
+			this.$emit("redrawSlider");
 		},
+		setNewStatus(status) {
+			this.$store.commit("setNewStatus", status);
+			this.toggleListVisibility();
+		},
+		toggleListVisibility() {
+			this.listVisiblity = !this.listVisiblity;
+		},
+		clearFilterModelStatus() {
+			this.$store.commit("clearFilterModelStatus");
+			this.toggleListVisibility();
+		},
+		handleSearchInput() {
+			this.$store.commit("searchInputFilter");
+			this.$emit("redrawSlider");
+		},
+	},
+	computed: {
+		selectedStatus() {
+			return this.$store.state.selectedStatus;
+		},
+	},
+	watch: {
+		selectedStatus() {
+			this.$emit("redrawSlider");
+		},
+	},
+	mounted() {
+		this.$store.commit("setNewStatus");
 	},
 };
 </script>
 
 <style lang="scss">
 .filters {
-	overflow: hidden;
 	margin-bottom: 25px;
 	&__container {
 		display: flex;
@@ -148,6 +190,9 @@ export default {
 		}
 		&-filters {
 			width: 100%;
+			position: relative;
+			border: 1px solid var(--green-color);
+			border-radius: 10px;
 		}
 		&-buttons {
 			width: 100%;
@@ -157,15 +202,15 @@ export default {
 		}
 		&-main {
 			border-radius: 10px;
-			max-height: 0;
+			display: none;
 			border: 0;
 			padding: 0;
 			&-active {
 				border: 1px solid var(--green-color);
 				padding: 20px;
 				padding-left: 25px;
-				max-height: unset;
 				margin-top: 25px;
+				display: block;
 			}
 		}
 		&-statuses {
@@ -184,21 +229,23 @@ export default {
 				height: 25px;
 				background: url("../img/triangle.svg") no-repeat;
 				background-position: center center;
+				pointer-events: none;
 			}
 		}
 	}
 	&__input {
 		&-search {
-			width: 100%;
+			width: calc(100% - 150px);
 			height: 100%;
 			border-radius: 10px;
-			border: 1px solid var(--green-color);
 			background: var(--white-color);
 			padding: 10px;
 			display: flex;
 			color: var(--black-color);
 			font-size: 24px;
 			font-weight: 400;
+			outline: none;
+			border: none;
 			&::placeholder {
 				color: rgba(0, 0, 0, 0.25);
 				font-size: 24px;
@@ -216,7 +263,13 @@ export default {
 			border: 1px solid var(--orange-color);
 			background: var(--white-color);
 			padding: 15px;
+			padding-right: 36px;
 			cursor: pointer;
+			transition: border-radius 0.3s ease;
+			outline: none;
+			&-active {
+				border-radius: 5px;
+			}
 		}
 	}
 	&__title {
@@ -233,11 +286,49 @@ export default {
 		justify-content: space-between;
 		gap: 45px;
 		margin-bottom: 25px;
+		&-select {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			padding: 20px;
+			background: var(--white-color);
+			border-radius: 5px;
+			border: 1px solid var(--orange-color);
+			list-style: none;
+			margin: 0;
+			position: absolute;
+			top: 60px;
+			left: 0;
+			right: 0;
+			z-index: 100;
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity 0.3s ease, visibility 0.3s ease;
+			&-active {
+				opacity: 1;
+				visibility: visible;
+			}
+		}
 	}
 	&__item {
 		display: flex;
 		gap: 25px;
 		width: 100%;
+		&-select {
+			border-radius: 3px;
+			border: 1px solid rgba(225, 83, 53, 0.25);
+			background: var(--white-color);
+			padding: 5px 19px;
+			color: var(--black-color);
+			text-align: center;
+			font-size: 14px;
+			line-height: 120%;
+			width: 100%;
+			transition: background 0.3s ease;
+			&:hover {
+				background: var(--light-blue-color);
+			}
+		}
 	}
 	&__categories {
 		border-radius: 10px;
@@ -327,6 +418,23 @@ export default {
 		}
 		&-apply {
 			background-color: var(--green-color);
+		}
+		&-search {
+			padding: 14px;
+			width: 150px;
+			background: var(--orange-color);
+			outline: none;
+			border: none;
+			position: absolute;
+			top: -1px;
+			bottom: -1px;
+			right: -1px;
+			border-radius: 10px;
+			color: var(--white-color);
+			text-align: center;
+			font-size: 18px;
+			font-weight: 400;
+			cursor: pointer;
 		}
 	}
 }

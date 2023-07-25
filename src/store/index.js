@@ -4,15 +4,16 @@ export default createStore({
 	state: {
 		rowsPerSlide: 5,
 		preparedSlides: [],
+		hiddenPreparedSlides: [],
 		pageCountOptions: [5, 10, 15],
 		searchPhrase: "",
-		currentFilters: [],
 		filterModel: {
 			vacancy: [],
 			job: [],
 			city: [],
+			replyStatus: [],
 		},
-		selectedStatus: "123",
+		selectedStatus: "",
 		categotyFilterList: [
 			{
 				en: "vacancy",
@@ -33,20 +34,22 @@ export default createStore({
 				name: "Иванов Евгений Иванович",
 				phone: "+7 (908) 078 87 23",
 				job: "Терапевт",
-				vacancy: "Врач-невролог 1",
+				vacancy: "Врач-невролог 123",
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Подумать",
 			},
 			{
 				id: 1,
 				name: "Иванов Евгений Иванович",
 				phone: "+7 (908) 078 87 23",
 				job: "Уборщик",
-				vacancy: "Врач-невролог 2",
+				vacancy: "Врач-невролог 232",
 				salary: "60 000",
 				city: "Екатеринбург",
 				hhLink: "https://google.com",
+				replyStatus: "Посмотревшие вакансию",
 			},
 			{
 				id: 2,
@@ -57,6 +60,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Алматы",
 				hhLink: "https://google.com",
+				replyStatus: "Посмотревшие вакансию",
 			},
 			{
 				id: 3,
@@ -67,6 +71,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Екатеринбург",
 				hhLink: "https://google.com",
+				replyStatus: "Посмотревшие вакансию",
 			},
 			{
 				id: 4,
@@ -77,6 +82,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Москва",
 				hhLink: "https://google.com",
+				replyStatus: "Подходящие отклики",
 			},
 			{
 				id: 5,
@@ -87,6 +93,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Екатеринбург",
 				hhLink: "https://google.com",
+				replyStatus: "Подумать",
 			},
 			{
 				id: 6,
@@ -97,6 +104,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Алматы",
 				hhLink: "https://google.com",
+				replyStatus: "Подходящие отклики",
 			},
 			{
 				id: 7,
@@ -107,6 +115,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Звонки",
 			},
 			{
 				id: 8,
@@ -117,6 +126,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Подходящие отклики",
 			},
 			{
 				id: 9,
@@ -127,6 +137,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Алматы",
 				hhLink: "https://google.com",
+				replyStatus: "Подумать",
 			},
 			{
 				id: 10,
@@ -137,6 +148,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Алматы",
 				hhLink: "https://google.com",
+				replyStatus: "Подходящие отклики",
 			},
 			{
 				id: 11,
@@ -147,6 +159,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Звонки",
 			},
 			{
 				id: 12,
@@ -157,6 +170,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Подумать",
 			},
 			{
 				id: 13,
@@ -167,6 +181,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Телефонное интервью",
 			},
 			{
 				id: 14,
@@ -177,6 +192,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Оценка",
 			},
 			{
 				id: 15,
@@ -187,6 +203,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Интервью",
 			},
 			{
 				id: 16,
@@ -197,6 +214,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Предложение о работе",
 			},
 			{
 				id: 17,
@@ -207,6 +225,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Челябинск",
 				hhLink: "https://google.com",
+				replyStatus: "Выход на работу",
 			},
 			{
 				id: 18,
@@ -217,6 +236,7 @@ export default createStore({
 				salary: "60 000",
 				city: "Москва",
 				hhLink: "https://google.com",
+				replyStatus: "Отказ",
 			},
 			{
 				id: 19,
@@ -227,8 +247,26 @@ export default createStore({
 				salary: "60 000",
 				city: "Нью-Йорк",
 				hhLink: "https://google.com",
+				replyStatus: "Посмотревшие вакансию",
 			},
 		],
+		rowsDataHidden: [],
+		savedRowsData: [],
+		statusesList: [
+			"Все неразобранные",
+			"Подходящие отклики",
+			"Звонки",
+			"Подумать",
+			"Телефонное интервью",
+			"Оценка",
+			"Интервью",
+			"Предложение о работе",
+			"Выход на работу",
+			"Отказ",
+			"Посмотревшие вакансию",
+		],
+		hideHiddenData: true,
+		searchableKeys: ["name", "phone", "job", "vacancy", "city"],
 	},
 	getters: {
 		isModelEmpty(state) {
@@ -242,9 +280,12 @@ export default createStore({
 		},
 	},
 	mutations: {
-		makePreparedSlides(state) {
-			for (let i = 0; i < state.rowsData.length; i += state.rowsPerSlide) {
-				const chunk = state.rowsData.slice(i, i + state.rowsPerSlide);
+		saveRowsData(state) {
+			state.savedRowsData = state.rowsData;
+		},
+		makePreparedSlides(state, array) {
+			for (let i = 0; i < array.length; i += state.rowsPerSlide) {
+				const chunk = array.slice(i, i + state.rowsPerSlide);
 				state.preparedSlides.push(chunk);
 			}
 		},
@@ -257,7 +298,7 @@ export default createStore({
 		deleteOldFilter(state, filterData, idx) {
 			state.filterModel[filterData.category].splice(idx, 1);
 		},
-		makeFilteredSlides(state) {
+		makeFilteredSlides(state, array) {
 			let matchedRowData = [];
 			let lastFilteredKey = "";
 			for (const key in state.filterModel) {
@@ -265,7 +306,7 @@ export default createStore({
 					const filterModelEl = state.filterModel[key];
 					if (filterModelEl.length > 0) {
 						filterModelEl.forEach((filterValue) => {
-							state.rowsData.forEach((row) => {
+							array.forEach((row) => {
 								if (row[key] == filterValue) {
 									matchedRowData.push(row);
 								}
@@ -280,36 +321,53 @@ export default createStore({
 			let keys = Object.keys(state.filterModel);
 			let nextCategory = keys[keys.indexOf(lastFilteredKey) + 1];
 
-			let filteredData = [];
+			let firstFilteredData = [];
 			if (nextCategory !== undefined && state.filterModel[nextCategory].length > 0) {
 				matchedRowData.forEach((el) => {
 					state.filterModel[nextCategory].forEach((value) => {
 						if (el[nextCategory] == value) {
-							filteredData.push(el);
+							firstFilteredData.push(el);
 						}
 					});
 				});
 			} else {
-				filteredData = matchedRowData;
+				firstFilteredData = matchedRowData;
 			}
 			lastFilteredKey = nextCategory;
 
-			let lastFilteredData = [];
+			let secondFilteredData = [];
 			nextCategory = keys[keys.indexOf(lastFilteredKey) + 1];
+
 			if (nextCategory !== undefined && state.filterModel[nextCategory].length > 0) {
-				filteredData.forEach((el) => {
+				firstFilteredData.forEach((el) => {
 					state.filterModel[nextCategory].forEach((value) => {
 						if (el[nextCategory] == value) {
-							lastFilteredData.push(el);
+							secondFilteredData.push(el);
 						}
 					});
 				});
 			} else {
-				lastFilteredData = filteredData;
+				secondFilteredData = firstFilteredData;
+			}
+			lastFilteredKey = nextCategory;
+
+			let thirdFilteredData = [];
+			nextCategory = keys[keys.indexOf(lastFilteredKey) + 1];
+
+			if (nextCategory !== undefined && state.filterModel[nextCategory].length > 0) {
+				firstFilteredData.forEach((el) => {
+					state.filterModel[nextCategory].forEach((value) => {
+						if (el[nextCategory] == value) {
+							thirdFilteredData.push(el);
+						}
+					});
+				});
+			} else {
+				thirdFilteredData = secondFilteredData;
 			}
 
-			for (let i = 0; i < lastFilteredData.length; i += state.rowsPerSlide) {
-				const chunk = lastFilteredData.slice(i, i + state.rowsPerSlide);
+			for (let i = 0; i < thirdFilteredData.length; i += state.rowsPerSlide) {
+				const chunk = thirdFilteredData.slice(i, i + state.rowsPerSlide);
 				state.preparedSlides.push(chunk);
 			}
 		},
@@ -318,7 +376,60 @@ export default createStore({
 				vacancy: [],
 				job: [],
 				city: [],
+				replyStatus: [],
 			};
+		},
+		clearFilterModelStatus(state) {
+			state.filterModel.replyStatus = [];
+		},
+		setNewStatus(state, status) {
+			status !== undefined ? (state.selectedStatus = status) : (state.selectedStatus = "Все неразобранные");
+		},
+		setNewFilterStatus(state, status) {
+			state.filterModel.replyStatus[0] = status;
+		},
+		hideRow(state, id) {
+			let removedRow = state.rowsData.splice(
+				state.rowsData.findIndex((row) => {
+					return row.id == id;
+				}),
+				1
+			);
+			state.rowsDataHidden.push(removedRow[0]);
+		},
+		returnRow(state, id) {
+			let removedRow = state.rowsData.splice(
+				state.rowsData.findIndex((row) => {
+					return row.id == id;
+				}),
+				1
+			);
+			state.rowsDataHidden.push(removedRow[0]);
+		},
+		switchRowData(state) {
+			let tempData = state.rowsDataHidden;
+			state.rowsDataHidden = state.rowsData;
+			state.rowsData = tempData;
+			state.hideHiddenData = !state.hideHiddenData;
+		},
+		searchInputFilter(state) {
+			if (state.searchPhrase.length > 0) {
+				const searchFilteredRowsData = state.rowsData.filter((row) => {
+					for (const key in row) {
+						if (Object.hasOwnProperty.call(row, key)) {
+							if (state.searchableKeys.includes(key)) {
+								const element = row[key];
+								if (element.includes(state.searchPhrase)) {
+									return row;
+								}
+							}
+						}
+					}
+				});
+				state.rowsData = searchFilteredRowsData;
+			} else {
+				state.rowsData = state.savedRowsData;
+			}
 		},
 	},
 	actions: {},
