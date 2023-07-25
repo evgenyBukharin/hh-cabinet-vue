@@ -1,7 +1,7 @@
 <template>
 	<section class="hero">
 		<div class="container hero__container">
-			<HeroFilters @redraw-slider="redrawSlider()" />
+			<HeroFilters @redraw-slider="redrawSlider()" @search-input-filter="searchInputFilter()" />
 			<div class="hero__table">
 				<div class="hero__header">
 					<div class="hero__row">
@@ -337,6 +337,9 @@ export default {
 			} else {
 				this.$store.commit("makeFilteredSlides", this.$store.state.rowsData);
 			}
+		},
+		searchInputFilter() {
+			this.$store.commit("searchInputFilter");
 		},
 	},
 	mounted() {

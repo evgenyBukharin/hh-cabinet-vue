@@ -267,6 +267,9 @@ export default createStore({
 		],
 		hideHiddenData: true,
 		searchableKeys: ["name", "phone", "job", "vacancy", "city"],
+		preSearchedRowsData: [],
+		preSearchedHiddenRowsData: [],
+		currentSearchCounter: 0,
 	},
 	getters: {
 		isModelEmpty(state) {
@@ -280,9 +283,6 @@ export default createStore({
 		},
 	},
 	mutations: {
-		saveRowsData(state) {
-			state.savedRowsData = state.rowsData;
-		},
 		makePreparedSlides(state, array) {
 			for (let i = 0; i < array.length; i += state.rowsPerSlide) {
 				const chunk = array.slice(i, i + state.rowsPerSlide);
@@ -389,6 +389,7 @@ export default createStore({
 			state.filterModel.replyStatus[0] = status;
 		},
 		hideRow(state, id) {
+			console.log("hide", id);
 			let removedRow = state.rowsData.splice(
 				state.rowsData.findIndex((row) => {
 					return row.id == id;
@@ -407,12 +408,32 @@ export default createStore({
 			state.rowsDataHidden.push(removedRow[0]);
 		},
 		switchRowData(state) {
+			// меняем местами текущие данные
 			let tempData = state.rowsDataHidden;
 			state.rowsDataHidden = state.rowsData;
 			state.rowsData = tempData;
+
+			// меняем местами сохраненные данные до поиска
+			tempData = state.preSearchedHiddenRowsData;
+			state.preSearchedHiddenRowsData = state.preSearchedRowsData;
+			state.preSearchedRowsData = tempData;
+
+			// true/false состояние для кнопки скрыть/вернуть
 			state.hideHiddenData = !state.hideHiddenData;
 		},
+		saveRowsData(state) {
+			state.savedRowsData = state.rowsData;
+		},
 		searchInputFilter(state) {
+			if (state.currentSearchCounter == 0) {
+				// если counter 0, то есть поиск происходит первый раз, то сохраняем даныне
+				state.preSearchedRowsData = state.rowsData;
+				state.preSearchedHiddenRowsData = state.rowsDataHidden;
+			} else {
+				// если counter НЕ 0, то перезаписываем сохраненные данные в исходные переменные
+				state.rowsData = state.preSearchedRowsData;
+				state.rowsDataHidden = state.preSearchedHiddenRowsData;
+			}
 			if (state.searchPhrase.length > 0) {
 				const searchFilteredRowsData = state.rowsData.filter((row) => {
 					for (const key in row) {
@@ -427,8 +448,17 @@ export default createStore({
 					}
 				});
 				state.rowsData = searchFilteredRowsData;
+				state.currentSearchCounter++;
 			} else {
-				state.rowsData = state.savedRowsData;
+				state.currentSearchCounter = 0;
+				// state.savedRowsData.forEach((row) => {
+				// 	let idx = state.rowsDataHidden.findIndex((hiddenRow) => {
+				// 		return hiddenRow.id == row.id;
+				// 	});
+				// 	if (idx == -1) {
+				// 		state.rowsData.push(row);
+				// 	}
+				// });
 			}
 		},
 	},

@@ -99,7 +99,7 @@ export default {
 	components: {
 		simplebar,
 	},
-	emits: ["redrawSlider"],
+	emits: ["redrawSlider", "searchInputFilter"],
 	methods: {
 		getUniqueItems(category) {
 			const result = this.$store.state.rowsData.reduce((acc, item) => {
@@ -156,7 +156,7 @@ export default {
 			this.toggleListVisibility();
 		},
 		handleSearchInput() {
-			this.$store.commit("searchInputFilter");
+			this.$emit("searchInputFilter");
 			this.$emit("redrawSlider");
 		},
 	},
