@@ -71,8 +71,15 @@
 									@mouseleave="toggleActive"
 								>
 									<div class="hero__container-icon">
-										<svg class="hero__icon-plus">
-											<use xlink:href="../img/sprite.svg#plus"></use>
+										<svg
+											class="hero__icon-plus"
+											viewBox="0 0 14 14"
+											id="plus"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												d="M10.062 0c2.334 0 3.665 1.318 3.665 3.658v6.41c0 2.328-1.325 3.66-3.658 3.66h-6.41C1.317 13.727 0 12.395 0 10.067v-6.41C0 1.318 1.318 0 3.658 0h6.404zM6.857 3.782a.568.568 0 00-.57.57v1.935H4.345a.595.595 0 00-.405.165.579.579 0 00.405.981h1.942v1.943a.57.57 0 101.14 0V7.433h1.949a.579.579 0 00.57-.576.568.568 0 00-.57-.57h-1.95V4.352a.568.568 0 00-.57-.57z"
+											/>
 										</svg>
 									</div>
 									<div class="hero__container-button-inner">CRM</div>
@@ -83,11 +90,31 @@
 									@mouseleave="toggleActive"
 								>
 									<div class="hero__container-icon">
-										<svg v-if="$store.state.hideHiddenData" class="hero__icon-minus">
-											<use xlink:href="../img/sprite.svg#minus"></use>
+										<svg
+											v-if="$store.state.hideHiddenData"
+											class="hero__icon-minus"
+											viewBox="0 0 13 13"
+											id="minus"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fill-rule="evenodd"
+												clip-rule="evenodd"
+												d="M9.529 0C11.739 0 13 1.248 13 3.465v6.07C13 11.74 11.745 13 9.536 13H3.465C1.248 13 0 11.739 0 9.536V3.465C0 1.248 1.248 0 3.465 0h6.064zM4.114 5.954H8.88c.299 0 .54.24.54.54a.549.549 0 01-.54.546H4.115a.548.548 0 01-.384-.93.564.564 0 01.383-.156z"
+											/>
 										</svg>
-										<svg v-else class="hero__icon-minus">
-											<use xlink:href="../img/sprite.svg#reverse-arrow"></use>
+										<svg
+											v-else
+											class="hero__icon-minus"
+											viewBox="0 0 25 25"
+											id="reverse-arrow"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<rect width="25" height="25" rx="5" />
+											<path
+												fill="white"
+												d="M4.5 12.866a1 1 0 010-1.732l6-3.464a1 1 0 011.5.866v6.928a1 1 0 01-1.5.866l-6-3.464zM14 12a1 1 0 011-1h5a1 1 0 011 1v1a1 1 0 01-1 1h-5a1 1 0 01-1-1v-1z"
+											/>
 										</svg>
 									</div>
 									<div
