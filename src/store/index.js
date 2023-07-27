@@ -389,7 +389,6 @@ export default createStore({
 			state.filterModel.replyStatus[0] = status;
 		},
 		hideRow(state, id) {
-			console.log("hide", id);
 			let removedRow = state.rowsData.splice(
 				state.rowsData.findIndex((row) => {
 					return row.id == id;

@@ -113,9 +113,7 @@ export default {
 		},
 		newFilterHandler(filterData, event) {
 			const input = event.target;
-			if (this.blockToggleCheckbox) {
-				console.log("blocked");
-			} else {
+			if (!this.blockToggleCheckbox) {
 				let filterIndex = this.checkExistingFilter(filterData);
 				if (filterIndex == -1) {
 					this.$store.commit("addNewFilter", filterData);
@@ -127,7 +125,6 @@ export default {
 					this.blockToggleCheckbox = false;
 				}, 300);
 				input.classList.toggle("filters__checkbox-active");
-				console.log("executed");
 			}
 		},
 		checkExistingFilter(filterData) {

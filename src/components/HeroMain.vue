@@ -140,7 +140,7 @@
 					<div class="hero__text-pages hero__text-footer">
 						<span class="hero__text-page">
 							Страницы:
-							<!-- <span class="hero__text-page">1</span> -->
+							<span class="hero__text-page" v-show="preparedSlides.length == 1">1</span>
 						</span>
 						<button class="btn-reset hero__button-control hero__button-prev">Пред</button>
 						<swiper
@@ -157,7 +157,11 @@
 						>
 						</swiper>
 						<button class="btn-reset hero__button-control hero__button-next">След.</button>
-						<button class="btn-reset hero__button-control hero__button-last" @click="moveToLastSlide">
+						<button
+							class="btn-reset hero__button-control hero__button-last"
+							@click="moveToLastSlide"
+							v-show="preparedSlides.length > 1"
+						>
 							Последняя
 						</button>
 					</div>
@@ -337,6 +341,9 @@ export default {
 	computed: {
 		rowsPerSlide() {
 			return this.$store.state.rowsPerSlide;
+		},
+		preparedSlides() {
+			return this.$store.state.preparedSlides;
 		},
 	},
 	watch: {
