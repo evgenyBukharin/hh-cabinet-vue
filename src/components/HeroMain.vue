@@ -30,7 +30,6 @@
 					:thumbs="{ swiper: thumbsSwiper }"
 					:slides-per-view="mainSliderOptions.slidesPerView"
 					:speed="mainSliderOptions.speed"
-					@swiper="setMainSwiper"
 				>
 					<swiper-slide v-for="(slide, idx) in $store.state.preparedSlides" :key="idx">
 						<div class="hero__row" v-for="(row, idx) in slide" :key="idx">
@@ -45,6 +44,7 @@
 							<div class="hero__cell hero__col-buttons">
 								<a
 									:href="row.hhLink"
+									target="_blank"
 									class="hero__container-button"
 									@mouseenter="toggleActive"
 									@mouseleave="toggleActive"
@@ -140,40 +140,24 @@
 					<div class="hero__text-pages hero__text-footer">
 						<span class="hero__text-page">
 							Страницы:
-							<span class="hero__text-page" v-show="$store.state.preparedSlides.length <= 1">1</span>
+							<!-- <span class="hero__text-page">1</span> -->
 						</span>
-						<button
-							class="btn-reset hero__button-control hero__button-prev"
-							v-show="$store.state.preparedSlides.length > 1"
-						>
-							Пред
-						</button>
+						<button class="btn-reset hero__button-control hero__button-prev">Пред</button>
 						<swiper
 							class="hero__slider-pagination"
-							v-show="$store.state.preparedSlides.length > 1"
 							:slides-per-view="bulletsSliderOptions.slidesPerView"
 							:speed="bulletsSliderOptions.speed"
 							:space-between="bulletsSliderOptions.spaceBetween"
 							:clickable="bulletsSliderOptions.clickable"
 							:centered-slides="bulletsSliderOptions.centeredSlides"
-							:navigation="bulletsSliderOptions.navigation"
 							wrapper-class="hero__pagination swiper-wrapper"
 							:modules="modules"
 							watchSlidesProgress
 							@swiper="setThumbsSwiper"
 						>
 						</swiper>
-						<button
-							class="btn-reset hero__button-control hero__button-next"
-							v-show="$store.state.preparedSlides.length > 1"
-						>
-							След.
-						</button>
-						<button
-							class="btn-reset hero__button-control hero__button-last"
-							v-show="$store.state.preparedSlides.length > 1"
-							@click="moveToLastSlide"
-						>
+						<button class="btn-reset hero__button-control hero__button-next">След.</button>
+						<button class="btn-reset hero__button-control hero__button-last" @click="moveToLastSlide">
 							Последняя
 						</button>
 					</div>
@@ -232,7 +216,7 @@ export default {
 				speed: 600,
 				spaceBetween: 26,
 				clickable: true,
-				centeredSlides: true,
+				centeredSlides: false,
 				navigation: {
 					nextEl: ".hero__button-next",
 					prevEl: ".hero__button-prev",
@@ -346,6 +330,8 @@ export default {
 		this.$store.commit("makePreparedSlides", this.$store.state.rowsData);
 		setTimeout(() => {
 			this.makeHovers();
+			const heroPagination = document.querySelector(".hero__pagination");
+			heroPagination.style.transform = "transform: translate3d(0px, 0px, 0px);";
 		}, 0);
 	},
 	computed: {

@@ -63,7 +63,7 @@
 									type="checkbox"
 									:value="{ category: category.en, value: item }"
 									:id="item + idx"
-									@change="newFilterHandler({ category: category.en, value: item })"
+									@change="newFilterHandler({ category: category.en, value: item }, $event)"
 								/>
 								<label class="filters__label" :for="item + idx"></label>
 								{{ item }}
@@ -94,6 +94,7 @@ export default {
 			isSwitchActive: false,
 			isInputActive: false,
 			listVisiblity: false,
+			blockToggleCheckbox: false,
 		};
 	},
 	components: {
@@ -110,12 +111,23 @@ export default {
 			}, []);
 			return result;
 		},
-		newFilterHandler(filterData) {
-			let filterIndex = this.checkExistingFilter(filterData);
-			if (filterIndex == -1) {
-				this.$store.commit("addNewFilter", filterData);
+		newFilterHandler(filterData, event) {
+			const input = event.target;
+			if (this.blockToggleCheckbox) {
+				console.log("blocked");
 			} else {
-				this.$store.commit("deleteOldFilter", filterData, filterIndex);
+				let filterIndex = this.checkExistingFilter(filterData);
+				if (filterIndex == -1) {
+					this.$store.commit("addNewFilter", filterData);
+				} else {
+					this.$store.commit("deleteOldFilter", filterData, filterIndex);
+				}
+				this.blockToggleCheckbox = true;
+				setTimeout(() => {
+					this.blockToggleCheckbox = false;
+				}, 300);
+				input.classList.toggle("filters__checkbox-active");
+				console.log("executed");
 			}
 		},
 		checkExistingFilter(filterData) {
@@ -398,9 +410,11 @@ export default {
 		overflow: hidden;
 		opacity: 0;
 		visibility: hidden;
-		&:checked ~ .filters__label::before,
-		&:checked ~ .filters__label::after {
-			opacity: 1;
+		&-active {
+			& ~ .filters__label::before,
+			& ~ .filters__label::after {
+				opacity: 1;
+			}
 		}
 	}
 	&__button {
