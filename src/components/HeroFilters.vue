@@ -114,18 +114,16 @@ export default {
 		newFilterHandler(filterData, event) {
 			if (!this.blockToggleCheckbox) {
 				let filterIndex = this.checkExistingFilter(filterData);
-				console.log(filterIndex);
 				if (filterIndex == -1) {
 					this.$store.commit("addNewFilter", filterData);
 				} else {
 					this.$store.commit("deleteOldFilter", filterData);
 				}
-				console.log(this.$store.state.filterModel.job);
 				this.blockToggleCheckbox = true;
 				setTimeout(() => {
 					this.blockToggleCheckbox = false;
-					console.log("unblocked");
-				}, 1000);
+				}, 300);
+				console.log(this.$store.state.filterModel);
 				event.target.classList.toggle("filters__checkbox-active");
 			}
 		},
@@ -167,6 +165,8 @@ export default {
 			this.toggleListVisibility();
 		},
 		handleSearchInput() {
+			this.removeAllChecked();
+			this.$store.commit("clearFilterModel");
 			this.$emit("searchInputFilter");
 			this.$emit("redrawSlider");
 		},

@@ -456,14 +456,6 @@ export default createStore({
 				state.currentSearchCounter++;
 			} else {
 				state.currentSearchCounter = 0;
-				// state.savedRowsData.forEach((row) => {
-				// 	let idx = state.rowsDataHidden.findIndex((hiddenRow) => {
-				// 		return hiddenRow.id == row.id;
-				// 	});
-				// 	if (idx == -1) {
-				// 		state.rowsData.push(row);
-				// 	}
-				// });
 			}
 		},
 	},
