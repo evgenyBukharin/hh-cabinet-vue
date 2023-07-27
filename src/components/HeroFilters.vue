@@ -3,7 +3,7 @@
 		<div class="filters__container">
 			<div class="filters__container-switch" :class="{ 'filters__container-switch-hidden': isInputActive }">
 				<label class="switch">
-					<input type="checkbox" id="switch-input" @change="isSwitchActive = !isSwitchActive" />
+					<input type="checkbox" id="switch-input" @change="isSwitchActive = !isSwitchActive" disabled />
 					<span
 						class="slider round"
 						:class="{
