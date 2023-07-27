@@ -123,7 +123,6 @@ export default {
 				setTimeout(() => {
 					this.blockToggleCheckbox = false;
 				}, 300);
-				console.log(this.$store.state.filterModel);
 				event.target.classList.toggle("filters__checkbox-active");
 			}
 		},
@@ -165,10 +164,10 @@ export default {
 			this.toggleListVisibility();
 		},
 		handleSearchInput() {
+			this.$emit("searchInputFilter");
 			this.removeAllChecked();
 			this.$store.commit("clearFilterModel");
-			this.$emit("searchInputFilter");
-			this.$emit("redrawSlider");
+			this.updateSlider();
 		},
 	},
 	computed: {
@@ -178,7 +177,7 @@ export default {
 	},
 	watch: {
 		selectedStatus() {
-			this.$emit("redrawSlider");
+			this.updateSlider();
 		},
 	},
 	mounted() {
