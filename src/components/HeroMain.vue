@@ -34,7 +34,7 @@
 					<swiper-slide v-for="(slide, idx) in $store.state.preparedSlides" :key="idx">
 						<div class="hero__row" v-for="(row, idx) in slide" :key="idx">
 							<div class="hero__cell hero__col-vacancy">{{ row.vacancy }}</div>
-							<div class="hero__cell hero__col-name">{{ row.id }} {{ row.name }}</div>
+							<div class="hero__cell hero__col-name">{{ row.name }}</div>
 							<div class="hero__cell hero__col-phone">
 								<a href="tel:+79080788723">{{ row.phone }}</a>
 							</div>

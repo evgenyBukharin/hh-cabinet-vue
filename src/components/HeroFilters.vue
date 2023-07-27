@@ -11,7 +11,9 @@
 						}"
 					>
 						<span class="filters__text-switch switch__text">Отклики</span>
-						<span class="filters__text-switch switch__text">Избранное</span>
+						<a href="/favorites.html" target="_blank" class="filters__text-switch switch__text"
+							>Избранное</a
+						>
 					</span>
 				</label>
 			</div>
@@ -475,6 +477,7 @@ export default {
 		font-size: 18px;
 		font-weight: 400;
 		line-height: 22px;
+		text-decoration: none;
 		&:first-child {
 			color: var(--white-color);
 		}
