@@ -112,19 +112,21 @@ export default {
 			return result;
 		},
 		newFilterHandler(filterData, event) {
-			const input = event.target;
 			if (!this.blockToggleCheckbox) {
 				let filterIndex = this.checkExistingFilter(filterData);
+				console.log(filterIndex);
 				if (filterIndex == -1) {
 					this.$store.commit("addNewFilter", filterData);
 				} else {
-					this.$store.commit("deleteOldFilter", filterData, filterIndex);
+					this.$store.commit("deleteOldFilter", filterData);
 				}
+				console.log(this.$store.state.filterModel.job);
 				this.blockToggleCheckbox = true;
 				setTimeout(() => {
 					this.blockToggleCheckbox = false;
-				}, 300);
-				input.classList.toggle("filters__checkbox-active");
+					console.log("unblocked");
+				}, 1000);
+				event.target.classList.toggle("filters__checkbox-active");
 			}
 		},
 		checkExistingFilter(filterData) {

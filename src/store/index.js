@@ -295,8 +295,14 @@ export default createStore({
 		addNewFilter(state, filterData) {
 			state.filterModel[filterData.category].push(filterData.value);
 		},
-		deleteOldFilter(state, filterData, idx) {
-			state.filterModel[filterData.category].splice(idx, 1);
+		deleteOldFilter(state, filterData) {
+			let filterModelField = state.filterModel[filterData.category];
+			filterModelField.splice(
+				filterModelField.findIndex((filter) => {
+					return filter == filterData.value;
+				}),
+				1
+			);
 		},
 		makeFilteredSlides(state, array) {
 			let matchedRowData = [];
