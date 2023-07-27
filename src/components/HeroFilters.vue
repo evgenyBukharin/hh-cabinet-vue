@@ -11,7 +11,7 @@
 						}"
 					>
 						<span class="filters__text-switch switch__text">Отклики</span>
-						<a href="/favorites.html" target="_blank" class="filters__text-switch switch__text"
+						<a href="./favorites.html" target="_blank" class="filters__text-switch switch__text"
 							>Избранное</a
 						>
 					</span>
