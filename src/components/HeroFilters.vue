@@ -143,10 +143,9 @@ export default {
 			this.updateSlider();
 		},
 		removeAllChecked() {
-			const mainList = document.querySelector(".filters__list");
-			const checkboxes = mainList.querySelectorAll(".filters__checkbox:checked");
-			checkboxes.forEach((checkbox) => {
-				checkbox.click();
+			const checkedCheckboxes = document.querySelectorAll(".filters__checkbox-active");
+			checkedCheckboxes.forEach((checkbox) => {
+				checkbox.classList.remove("filters__checkbox-active");
 			});
 		},
 		updateSlider() {
@@ -164,9 +163,9 @@ export default {
 			this.toggleListVisibility();
 		},
 		handleSearchInput() {
-			this.$emit("searchInputFilter");
 			this.removeAllChecked();
 			this.$store.commit("clearFilterModel");
+			this.$emit("searchInputFilter");
 			this.updateSlider();
 		},
 	},
