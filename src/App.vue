@@ -1,17 +1,21 @@
 <template>
 	<HeroMain />
+	<DataWaiter v-show="$store.state.isDataLoading" />
 </template>
 
 <script>
 import HeroMain from "./components/HeroMain.vue";
+import DataWaiter from "./components/DataWaiter.vue";
 
 export default {
 	name: "App",
 	components: {
 		HeroMain,
+		DataWaiter,
 	},
 	mounted() {
 		this.$store.commit("saveRowsData");
+		this.$store.state.isDataLoading = false;
 	},
 };
 </script>

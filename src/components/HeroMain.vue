@@ -27,9 +27,11 @@
 					:modules="modules"
 					:navigation="mainSliderOptions.navigation"
 					:pagination="mainSliderOptions.pagination"
-					:thumbs="{ swiper: thumbsSwiper }"
+					:thumbs="{ swiper: bulletsSliderStored }"
 					:slides-per-view="mainSliderOptions.slidesPerView"
 					:speed="mainSliderOptions.speed"
+					@swiper="onSwiper"
+					@slides-length-change="handle()"
 				>
 					<swiper-slide v-for="(slide, idx) in $store.state.preparedSlides" :key="idx">
 						<div class="hero__row" v-for="(row, idx) in slide" :key="idx">
@@ -143,19 +145,21 @@
 							<span class="hero__text-page" v-show="preparedSlides.length == 1">1</span>
 						</span>
 						<button class="btn-reset hero__button-control hero__button-prev">Пред</button>
-						<swiper
-							class="hero__slider-pagination"
-							:slides-per-view="bulletsSliderOptions.slidesPerView"
-							:speed="bulletsSliderOptions.speed"
-							:space-between="bulletsSliderOptions.spaceBetween"
-							:clickable="bulletsSliderOptions.clickable"
-							:centered-slides="bulletsSliderOptions.centeredSlides"
-							wrapper-class="hero__pagination swiper-wrapper"
-							:modules="modules"
-							watchSlidesProgress
-							@swiper="setThumbsSwiper"
-						>
-						</swiper>
+						<div class="hero__container-slider-bullets">
+							<swiper
+								class="hero__slider-pagination"
+								:slides-per-view="bulletsSliderOptions.slidesPerView"
+								:speed="bulletsSliderOptions.speed"
+								:space-between="bulletsSliderOptions.spaceBetween"
+								:clickable="bulletsSliderOptions.clickable"
+								:centered-slides="bulletsSliderOptions.centeredSlides"
+								wrapper-class="hero__pagination swiper-wrapper"
+								:modules="modules"
+								watchSlidesProgress
+								@swiper="onBullets"
+							>
+							</swiper>
+						</div>
 						<button class="btn-reset hero__button-control hero__button-next">След.</button>
 						<button
 							class="btn-reset hero__button-control hero__button-last"
@@ -192,6 +196,8 @@ export default {
 	name: "HeroMain",
 	data() {
 		return {
+			mainSliderStored: null,
+			bulletsSliderStored: null,
 			switchText: false,
 			actualText: {
 				false: "Актуальные отклики",
@@ -216,9 +222,9 @@ export default {
 				},
 			},
 			bulletsSliderOptions: {
-				slidesPerView: 3,
+				slidesPerView: 5,
 				speed: 600,
-				spaceBetween: 26,
+				spaceBetween: 20,
 				clickable: true,
 				centeredSlides: false,
 				navigation: {
@@ -329,14 +335,25 @@ export default {
 		searchInputFilter() {
 			this.$store.commit("searchInputFilter");
 		},
+		onSwiper(swiper) {
+			this.mainSliderStored = swiper;
+		},
+		onBullets(swiper) {
+			this.bulletsSliderStored = swiper;
+		},
+		handle() {
+			this.bulletsSliderStored.slides = [];
+			this.mainSliderStored.pagination.render();
+			const bullets = document.querySelectorAll(".hero__bullet");
+			bullets.forEach((bullet) => {
+				bullet.style.marginRight = "20px !important";
+			});
+			this.bulletsSliderStored.update();
+			console.log(this.bulletsSliderStored);
+		},
 	},
 	mounted() {
-		this.$store.commit("makePreparedSlides", this.$store.state.rowsData);
-		setTimeout(() => {
-			this.makeHovers();
-			const heroPagination = document.querySelector(".hero__pagination");
-			heroPagination.style.transform = "transform: translate3d(0px, 0px, 0px);";
-		}, 0);
+		// this.$store.dispatch("getRowsData");
 	},
 	computed: {
 		rowsPerSlide() {
@@ -345,10 +362,17 @@ export default {
 		preparedSlides() {
 			return this.$store.state.preparedSlides;
 		},
+		isRowsDataReady() {
+			return this.$store.state.isRowsDataReady;
+		},
 	},
 	watch: {
 		rowsPerSlide() {
 			this.redrawSlider();
+		},
+		isRowsDataReady() {
+			this.redrawSlider();
+			this.makeHovers();
 		},
 	},
 };
@@ -500,6 +524,7 @@ export default {
 			text-align: center;
 			max-width: 200px;
 			width: 100%;
+			justify-content: center;
 		}
 		&-phone {
 			box-sizing: border-box;
@@ -642,7 +667,7 @@ export default {
 	}
 	&__slider {
 		&-pagination {
-			max-width: 82px;
+			max-width: 184px;
 		}
 	}
 	&__text {
@@ -720,6 +745,9 @@ export default {
 		height: 100% !important;
 		line-height: 18px;
 		transition: color 0.3s linear;
+		text-align: center;
+		margin-right: 20px !important;
+		min-width: 20.8px;
 		&:last-child {
 			margin-right: 0 !important;
 		}
@@ -739,7 +767,7 @@ export default {
 			content: "";
 			position: absolute;
 			top: 0;
-			right: -13px;
+			right: -50%;
 			height: 100%;
 			width: 1px;
 			background: var(--black-color);
