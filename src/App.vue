@@ -1,6 +1,6 @@
 <template>
 	<HeroMain />
-	<DataWaiter v-show="$store.state.isDataLoading" />
+	<DataWaiter />
 </template>
 
 <script>
@@ -15,12 +15,14 @@ export default {
 	},
 	mounted() {
 		this.$store.commit("saveRowsData");
-		this.$store.state.isDataLoading = false;
 	},
 };
 </script>
 
 <style lang="scss">
+#app {
+	position: relative;
+}
 :root {
 	--font-family: "Montserrat", sans-serif;
 	--second-family: "Open Sans", sans-serif;

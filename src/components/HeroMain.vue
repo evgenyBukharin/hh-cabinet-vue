@@ -353,7 +353,7 @@ export default {
 		},
 	},
 	mounted() {
-		// this.$store.dispatch("getRowsData");
+		this.$store.dispatch("getRowsData");
 	},
 	computed: {
 		rowsPerSlide() {
