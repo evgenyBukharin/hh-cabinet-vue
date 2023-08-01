@@ -11,9 +11,13 @@
 						}"
 					>
 						<span class="filters__text-switch switch__text">Отклики</span>
-						<a href="./favorites.html" target="_blank" class="filters__text-switch switch__text"
-							>Избранное</a
+						<a
+							href="https://hh.ru/oauth/authorize?response_type=code&client_id=PR0DIA47DE42CEAF62GU2FOUUNF808BL3OAU7QRSG276L01NQN7TA3J133HRS4G8&redirect_uri=https%3A%2F%2Fb24-ost.ru%2Fhr_integration_opti%2Findex.php%2F"
+							target="_blank"
+							class="filters__text-switch switch__text"
 						>
+							Избранное
+						</a>
 					</span>
 				</label>
 			</div>
