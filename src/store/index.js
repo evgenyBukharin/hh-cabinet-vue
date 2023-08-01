@@ -450,8 +450,10 @@ export default createStore({
 						if (Object.hasOwnProperty.call(row, key)) {
 							if (state.searchableKeys.includes(key)) {
 								const element = row[key];
-								if (element.includes(state.searchPhrase)) {
-									return row;
+								if (element !== null) {
+									if (element.includes(state.searchPhrase)) {
+										return row;
+									}
 								}
 							}
 						}
@@ -464,9 +466,7 @@ export default createStore({
 			}
 		},
 		setRowsData(state, phpRowsData) {
-			console.log(phpRowsData);
 			state.rowsData = phpRowsData;
-			console.log(state.rowsData);
 		},
 		updateDataFlag(state) {
 			state.isRowsDataReady = true;

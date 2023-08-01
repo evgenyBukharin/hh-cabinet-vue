@@ -31,7 +31,7 @@ export default {
 
 <style lang="scss">
 .loader {
-	z-index: 1000;
+	z-index: 970;
 	position: absolute;
 	inset: 0;
 	background: rgba(0, 0, 0, 0.8);
@@ -40,6 +40,7 @@ export default {
 	opacity: 1;
 	visibility: visible;
 	transition: opacity 0.4s ease, visibility 0.4s ease;
+	border-radius: 10px;
 	&-hidden {
 		opacity: 0;
 		visibility: hidden;

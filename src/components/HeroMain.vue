@@ -66,11 +66,11 @@
 									</div>
 									<div class="hero__container-button-inner">Перейти</div>
 								</a>
-								<a
-									href="https://google.com"
+								<button
 									class="hero__container-button hero__container-button-active"
 									@mouseenter="toggleActive"
 									@mouseleave="toggleActive"
+									@click="sendCrmData(row, $event.target)"
 								>
 									<div class="hero__container-icon">
 										<svg
@@ -85,7 +85,7 @@
 										</svg>
 									</div>
 									<div class="hero__container-button-inner">CRM</div>
-								</a>
+								</button>
 								<div
 									class="hero__container-button"
 									@mouseenter="toggleActive"
@@ -190,6 +190,8 @@ import { ref } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Pagination, Thumbs, Controller } from "swiper/modules";
 
+import axios from "axios";
+
 import "swiper/css/bundle";
 
 export default {
@@ -254,6 +256,16 @@ export default {
 		};
 	},
 	methods: {
+		async sendCrmData(row, target) {
+			const button = target.closest("button");
+			button.setAttribute("disabled", "disabled");
+			await axios.post(`https://b24-ost.ru/hr_integration_opti/vacan/webhook.php`, row).then((response) => {
+				if (response == "Error") {
+					console.log("someking of error");
+					button.removeAttirbute("disabled");
+				}
+			});
+		},
 		makeHovers() {
 			const names = document.querySelectorAll(".hero__col-name");
 			const phones = document.querySelectorAll(".hero__col-phone");
@@ -349,7 +361,6 @@ export default {
 				bullet.style.marginRight = "20px !important";
 			});
 			this.bulletsSliderStored.update();
-			console.log(this.bulletsSliderStored);
 		},
 	},
 	mounted() {
@@ -383,8 +394,7 @@ export default {
 	color: var(--blue-color);
 }
 .hero {
-	padding-top: 50px;
-	padding-bottom: 50px;
+	padding-top: 15px;
 	min-height: 700px;
 	&__container {
 		&-button {
@@ -399,10 +409,12 @@ export default {
 			width: 25px;
 			cursor: pointer;
 			overflow: hidden;
-			transition: width 0.2s linear;
+			transition: width 0.2s linear, opacity 0.2s ease;
 			border: 1px solid var(--green-color);
 			border-radius: 5px;
 			height: 25px;
+			padding: 0;
+			background: var(--white-color);
 			&-active {
 				width: 100px;
 				& .hero__container-button-inner {
@@ -416,6 +428,10 @@ export default {
 				width: 75px;
 				transition: opacity 0.2s linear 0.2s;
 				opacity: 0;
+			}
+			&:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
 			}
 		}
 		&-icon {

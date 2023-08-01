@@ -204,6 +204,7 @@ export default {
 			position: relative;
 			border: 1px solid var(--green-color);
 			border-radius: 10px;
+			max-height: 50px;
 		}
 		&-buttons {
 			width: 100%;
@@ -230,6 +231,7 @@ export default {
 			max-width: 300px;
 			position: relative;
 			cursor: pointer;
+			max-height: 50px;
 			&::after {
 				content: "";
 				position: absolute;
@@ -278,6 +280,7 @@ export default {
 			cursor: pointer;
 			transition: border-radius 0.3s ease;
 			outline: none;
+			max-height: inherit;
 			&-active {
 				border-radius: 5px;
 			}
