@@ -273,8 +273,24 @@ export default createStore({
 		currentSearchCounter: 0,
 		isRowsDataReady: false,
 		isDataLoading: true,
-		errorHappened: false,
+		showTimeTitle: true,
 		loaderText: "Данные загружаются...",
+		showErrorFilesList: false,
+		errorFilesList: [],
+		errorPaths: {
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies.php/": "все неразобранные и предложение о работе",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_2.php/": "подходящие отклики и интервью",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_3123.php/": "отказ и подумать",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_4.php/": "звонки и выход на работу",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_5123.php/": "соискатели рядом и оценка",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_6.php/":
+				"посмотревшие вакансию и телефонное интервью",
+		},
+		token: "",
+		showSpinner: true,
+		showErrorIcon: false,
+		showMessage: false,
+		loaderReplies: [],
 	},
 	getters: {
 		isModelEmpty(state) {
@@ -393,6 +409,9 @@ export default createStore({
 		clearFilterModelStatus(state) {
 			state.filterModel.replyStatus = [];
 		},
+		clearRowsData(state) {
+			state.rowsData = [];
+		},
 		setNewStatus(state, status) {
 			status !== undefined ? (state.selectedStatus = status) : (state.selectedStatus = "Все неразобранные");
 		},
@@ -465,11 +484,35 @@ export default createStore({
 				state.currentSearchCounter = 0;
 			}
 		},
-		setRowsData(state, phpRowsData) {
-			state.rowsData = phpRowsData;
+		addRowsData(state, responseData) {
+			state.rowsData = [...state.rowsData, ...responseData];
 		},
 		updateDataFlag(state) {
 			state.isRowsDataReady = true;
+		},
+		hideLoader(state) {
+			state.isDataLoading = false;
+		},
+		showLoaderError(state) {
+			state.loaderText = "Не удалось загрузить некоторые данные по фильтру / фильтрам:";
+			state.showErrorFilesList = true;
+			state.showErrorIcon = true;
+			state.showSpinner = false;
+			state.showTimeTitle = false;
+		},
+		showMessage(state, message) {
+			state.isDataLoading = true;
+			state.showMessage = true;
+			state.loaderText = message;
+			state.showTimeTitle = false;
+			state.showErrorFilesList = false;
+			state.showErrorIcon = false;
+		},
+		addLoaderReply(state, reply) {
+			state.loaderReplies.push(reply);
+		},
+		removeReply(state, idx) {
+			state.loaderReplies.splice(idx, 1);
 		},
 	},
 	actions: {
@@ -478,23 +521,100 @@ export default createStore({
 			if (tokenInput) {
 				const token = tokenInput.getAttribute("value");
 				if (token) {
+					state.token = token;
 					state.isDataLoading = true;
 					document.title = "Загрузка данных...";
-					await axios
-						.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies.php/?token=${token}`)
-						.then((r) => r.data)
-						.then((rowsData) => {
-							commit("setRowsData", rowsData);
-							commit("makePreparedSlides", state.rowsData);
+					Promise.all([
+						axios
+							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies.php/?token=${token}`)
+							.catch((e) => {
+								let url = new URL(e.config.url);
+								let noSearchParamsURL = url.origin + url.pathname;
+								state.errorFilesList.push(noSearchParamsURL);
+							}),
+						axios
+							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies_2.php/?token=${token}`)
+							.catch((e) => {
+								let url = new URL(e.config.url);
+								let noSearchParamsURL = url.origin + url.pathname;
+								state.errorFilesList.push(noSearchParamsURL);
+							}),
+						axios
+							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies_3123.php/?token=${token}`)
+							.catch((e) => {
+								let url = new URL(e.config.url);
+								let noSearchParamsURL = url.origin + url.pathname;
+								state.errorFilesList.push(noSearchParamsURL);
+							}),
+						axios
+							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies_4.php/?token=${token}`)
+							.catch((e) => {
+								let url = new URL(e.config.url);
+								let noSearchParamsURL = url.origin + url.pathname;
+								state.errorFilesList.push(noSearchParamsURL);
+							}),
+						axios
+							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies_5123.php/?token=${token}`)
+							.catch((e) => {
+								let url = new URL(e.config.url);
+								let noSearchParamsURL = url.origin + url.pathname;
+								state.errorFilesList.push(noSearchParamsURL);
+							}),
+						axios
+							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies_6.php/?token=${token}`)
+							.catch((e) => {
+								let url = new URL(e.config.url);
+								let noSearchParamsURL = url.origin + url.pathname;
+								state.errorFilesList.push(noSearchParamsURL);
+							}),
+					])
+						.then(
+							axios.spread((response1, response2, response3, response4, response5, response6) => {
+								commit("clearRowsData");
+								const allResponses = [response1, response2, response3, response4, response5, response6];
+								allResponses.forEach((response) => {
+									if (response?.status == 200) {
+										commit("addRowsData", response.data);
+									}
+								});
+							})
+						)
+						.finally(() => {
+							if (state.errorFilesList.length == 0) {
+								commit("hideLoader");
+								document.title = "Список вакансий HH";
+							} else {
+								commit("showLoaderError");
+							}
 							commit("updateDataFlag");
-							state.isDataLoading = false;
-							document.title = "Список вакансий HH";
 						});
 				} else {
 					state.loaderText = `Авторизационный токен не получен, заново перейдите по ссылке "Список вакансий HH" в боковом меню.`;
-					state.errorHappened = true;
 				}
 			}
+		},
+		async reloadErrorFile({ state, commit }, path) {
+			axios
+				.get(path + `?token=${state.token}`)
+				.then((response) => {
+					console.log(response);
+					let url = new URL(response.config.url);
+					let noSearchParamsURL = url.origin + url.pathname;
+					commit("addRowsData", response.data);
+					commit("addLoaderReply", {
+						file: this.$store.state.errorPaths[noSearchParamsURL],
+						message: "Превышено время загрузки, повторите попытку через некоторое время",
+					});
+				})
+				.catch((e) => {
+					console.log(e);
+					let url = new URL(e.config.url);
+					let noSearchParamsURL = url.origin + url.pathname;
+					commit("addLoaderReply", {
+						file: this.$store.state.errorPaths[noSearchParamsURL],
+						message: "Превышено время загрузки, повторите попытку через некоторое время",
+					});
+				});
 		},
 	},
 	modules: {},

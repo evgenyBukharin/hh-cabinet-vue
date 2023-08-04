@@ -380,10 +380,11 @@ export default {
 	watch: {
 		rowsPerSlide() {
 			this.redrawSlider();
+			// this.makeHovers();
 		},
 		isRowsDataReady() {
 			this.redrawSlider();
-			this.makeHovers();
+			// this.makeHovers();
 		},
 	},
 };
