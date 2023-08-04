@@ -373,8 +373,8 @@ export default {
 		preparedSlides() {
 			return this.$store.state.preparedSlides;
 		},
-		isRowsDataReady() {
-			return this.$store.state.isRowsDataReady;
+		rowsDataUpdated() {
+			return this.$store.state.rowsDataUpdated;
 		},
 	},
 	watch: {
@@ -382,8 +382,10 @@ export default {
 			this.redrawSlider();
 			// this.makeHovers();
 		},
-		isRowsDataReady() {
-			this.redrawSlider();
+		rowsDataUpdated() {
+			if (this.rowsDataUpdated == true) {
+				this.redrawSlider();
+			}
 			// this.makeHovers();
 		},
 	},

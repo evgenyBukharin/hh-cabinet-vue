@@ -62,26 +62,26 @@
 				ОК
 			</h3>
 		</div>
-		<div class="loader__replies">
-			<div class="loader__reply" v-for="(item, idx) in $store.state.loaderReplies" :key="idx">
-				<div class="loader__file">{{ item.file }}</div>
-				<div class="loader__message">{{ item.message }}</div>
-				<svg
-					class="loader__icon-close"
-					@click="removeReply(idx)"
-					width="10"
-					height="10"
-					viewBox="0 0 10 10"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<circle cx="5" cy="5" r="5" fill="#E15335" />
-					<path d="M7.5 2.5L2.5 7.5" stroke="white" stroke-linecap="round" />
-					<path d="M7.5 7.5L2.5 2.5" stroke="white" stroke-linecap="round" />
-				</svg>
-			</div>
-		</div>
 	</section>
+	<div class="loader__replies" v-show="$store.state.loaderReplies">
+		<div class="loader__reply" v-for="(item, idx) in $store.state.loaderReplies" :key="idx">
+			<div class="loader__file">{{ item.file }}</div>
+			<div class="loader__message">{{ item.message }}</div>
+			<svg
+				class="loader__icon-close"
+				@click="removeReply(idx)"
+				width="10"
+				height="10"
+				viewBox="0 0 10 10"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<circle cx="5" cy="5" r="5" fill="#E15335" />
+				<path d="M7.5 2.5L2.5 7.5" stroke="white" stroke-linecap="round" />
+				<path d="M7.5 7.5L2.5 2.5" stroke="white" stroke-linecap="round" />
+			</svg>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -192,6 +192,7 @@ export default {
 		position: absolute;
 		top: 30px;
 		right: 30px;
+		z-index: 970;
 	}
 	&__reply {
 		padding: 14px 23px;

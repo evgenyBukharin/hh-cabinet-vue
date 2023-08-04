@@ -271,20 +271,20 @@ export default createStore({
 		preSearchedRowsData: [],
 		preSearchedHiddenRowsData: [],
 		currentSearchCounter: 0,
-		isRowsDataReady: false,
+		rowsDataUpdated: false,
 		isDataLoading: true,
 		showTimeTitle: true,
 		loaderText: "Данные загружаются...",
 		showErrorFilesList: false,
 		errorFilesList: [],
 		errorPaths: {
-			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies.php/": "все неразобранные и предложение о работе",
-			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_2.php/": "подходящие отклики и интервью",
-			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_3123.php/": "отказ и подумать",
-			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_4.php/": "звонки и выход на работу",
-			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_5123.php/": "соискатели рядом и оценка",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies.php/": "Все неразобранные и предложение о работе",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_2.php/": "Подходящие отклики и интервью",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_3123.php/": "Отказ и подумать",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_4.php/": "Звонки и выход на работу",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_5123.php/": "Соискатели рядом и оценка",
 			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_6.php/":
-				"посмотревшие вакансию и телефонное интервью",
+				"Посмотревшие вакансию и телефонное интервью",
 		},
 		token: "",
 		showSpinner: true,
@@ -487,8 +487,9 @@ export default createStore({
 		addRowsData(state, responseData) {
 			state.rowsData = [...state.rowsData, ...responseData];
 		},
-		updateDataFlag(state) {
-			state.isRowsDataReady = true;
+		newDataAccepted(state) {
+			state.rowsDataUpdated = true;
+			state.rowsDataUpdated = false;
 		},
 		hideLoader(state) {
 			state.isDataLoading = false;
@@ -586,32 +587,39 @@ export default createStore({
 							} else {
 								commit("showLoaderError");
 							}
-							commit("updateDataFlag");
+							commit("newDataAccepted");
 						});
 				} else {
 					state.loaderText = `Авторизационный токен не получен, заново перейдите по ссылке "Список вакансий HH" в боковом меню.`;
+					state.showTimeTitle = false;
+					state.showSpinner = false;
+					state.showErrorIcon = true;
 				}
+			} else {
+				state.loaderText = `Авторизационный токен не получен, заново перейдите по ссылке "Список вакансий HH" в боковом меню.`;
+				state.showTimeTitle = false;
+				state.showSpinner = false;
+				state.showErrorIcon = true;
 			}
 		},
 		async reloadErrorFile({ state, commit }, path) {
 			axios
 				.get(path + `?token=${state.token}`)
 				.then((response) => {
-					console.log(response);
 					let url = new URL(response.config.url);
 					let noSearchParamsURL = url.origin + url.pathname;
 					commit("addRowsData", response.data);
 					commit("addLoaderReply", {
-						file: this.$store.state.errorPaths[noSearchParamsURL],
-						message: "Превышено время загрузки, повторите попытку через некоторое время",
+						file: state.errorPaths[noSearchParamsURL],
+						message: "Данные успешно загружены",
 					});
+					commit("newDataAccepted");
 				})
 				.catch((e) => {
-					console.log(e);
 					let url = new URL(e.config.url);
 					let noSearchParamsURL = url.origin + url.pathname;
 					commit("addLoaderReply", {
-						file: this.$store.state.errorPaths[noSearchParamsURL],
+						file: state.errorPaths[noSearchParamsURL],
 						message: "Превышено время загрузки, повторите попытку через некоторое время",
 					});
 				});
