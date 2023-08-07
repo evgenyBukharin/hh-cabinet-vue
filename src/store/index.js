@@ -276,13 +276,16 @@ export default createStore({
 		showTimeTitle: true,
 		loaderText: "Данные загружаются...",
 		showErrorFilesList: false,
-		errorFilesList: [],
+		errorFilesList: [
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies.php/",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_2.php/",
+		],
 		errorPaths: {
 			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies.php/": "Все неразобранные и предложение о работе",
 			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_2.php/": "Подходящие отклики и интервью",
-			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_3123.php/": "Отказ и подумать",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_3.php/": "Отказ и подумать",
 			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_4.php/": "Звонки и выход на работу",
-			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_5123.php/": "Соискатели рядом и оценка",
+			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_5.php/": "Соискатели рядом и оценка",
 			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_6.php/":
 				"Посмотревшие вакансию и телефонное интервью",
 		},
@@ -489,7 +492,6 @@ export default createStore({
 		},
 		newDataAccepted(state) {
 			state.rowsDataUpdated = true;
-			state.rowsDataUpdated = false;
 		},
 		hideLoader(state) {
 			state.isDataLoading = false;
@@ -514,6 +516,9 @@ export default createStore({
 		},
 		removeReply(state, idx) {
 			state.loaderReplies.splice(idx, 1);
+		},
+		resetRowsDataUpdated(state) {
+			state.rowsDataUpdated = false;
 		},
 	},
 	actions: {
@@ -541,7 +546,7 @@ export default createStore({
 								state.errorFilesList.push(noSearchParamsURL);
 							}),
 						axios
-							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies_3123.php/?token=${token}`)
+							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies_3.php/?token=${token}`)
 							.catch((e) => {
 								let url = new URL(e.config.url);
 								let noSearchParamsURL = url.origin + url.pathname;
@@ -555,7 +560,7 @@ export default createStore({
 								state.errorFilesList.push(noSearchParamsURL);
 							}),
 						axios
-							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies_5123.php/?token=${token}`)
+							.get(`https://b24-ost.ru/hr_integration_opti/vacan/vacancies_5.php/?token=${token}`)
 							.catch((e) => {
 								let url = new URL(e.config.url);
 								let noSearchParamsURL = url.origin + url.pathname;
@@ -590,13 +595,13 @@ export default createStore({
 							commit("newDataAccepted");
 						});
 				} else {
-					state.loaderText = `Авторизационный токен не получен, заново перейдите по ссылке "Список вакансий HH" в боковом меню.`;
+					state.loaderText = `Сеанс устарел, заново перейдите по ссылке "Список вакансий HH" в боковом меню.`;
 					state.showTimeTitle = false;
 					state.showSpinner = false;
 					state.showErrorIcon = true;
 				}
 			} else {
-				state.loaderText = `Авторизационный токен не получен, заново перейдите по ссылке "Список вакансий HH" в боковом меню.`;
+				state.loaderText = `Сеанс устарел, заново перейдите по ссылке "Список вакансий HH" в боковом меню.`;
 				state.showTimeTitle = false;
 				state.showSpinner = false;
 				state.showErrorIcon = true;

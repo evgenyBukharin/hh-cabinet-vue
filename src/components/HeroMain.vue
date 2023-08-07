@@ -383,9 +383,8 @@ export default {
 			// this.makeHovers();
 		},
 		rowsDataUpdated() {
-			if (this.rowsDataUpdated == true) {
-				this.redrawSlider();
-			}
+			this.redrawSlider();
+			this.$store.commit("resetRowsDataUpdated");
 			// this.makeHovers();
 		},
 	},

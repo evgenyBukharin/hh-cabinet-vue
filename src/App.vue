@@ -15,6 +15,10 @@ export default {
 	},
 	mounted() {
 		this.$store.commit("saveRowsData");
+
+		// setTimeout(() => {
+		// 	this.$store.commit("showLoaderError");
+		// }, 3000);
 	},
 };
 </script>
