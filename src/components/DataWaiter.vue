@@ -189,9 +189,9 @@ export default {
 		transform: translateZ(0);
 	}
 	&__replies {
-		position: absolute;
-		top: 30px;
-		right: 30px;
+		position: fixed;
+		bottom: 30px;
+		right: 114px;
 		z-index: 970;
 	}
 	&__reply {

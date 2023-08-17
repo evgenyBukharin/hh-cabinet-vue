@@ -276,10 +276,7 @@ export default createStore({
 		showTimeTitle: true,
 		loaderText: "Данные загружаются...",
 		showErrorFilesList: false,
-		errorFilesList: [
-			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies.php/",
-			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_2.php/",
-		],
+		errorFilesList: [],
 		errorPaths: {
 			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies.php/": "Все неразобранные и предложение о работе",
 			"https://b24-ost.ru/hr_integration_opti/vacan/vacancies_2.php/": "Подходящие отклики и интервью",
@@ -513,6 +510,12 @@ export default createStore({
 		},
 		addLoaderReply(state, reply) {
 			state.loaderReplies.push(reply);
+			setTimeout(() => {
+				let idx = state.loaderReplies.findIndex((obj) => {
+					return obj.time == reply.time;
+				});
+				state.loaderReplies.splice(idx, 1);
+			}, 3000);
 		},
 		removeReply(state, idx) {
 			state.loaderReplies.splice(idx, 1);
@@ -617,6 +620,7 @@ export default createStore({
 					commit("addLoaderReply", {
 						file: state.errorPaths[noSearchParamsURL],
 						message: "Данные успешно загружены",
+						time: Date.now(),
 					});
 					commit("newDataAccepted");
 				})
@@ -626,6 +630,7 @@ export default createStore({
 					commit("addLoaderReply", {
 						file: state.errorPaths[noSearchParamsURL],
 						message: "Превышено время загрузки, повторите попытку через некоторое время",
+						time: Date.now(),
 					});
 				});
 		},
