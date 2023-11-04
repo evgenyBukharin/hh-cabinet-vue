@@ -461,21 +461,6 @@ export default {
 	}
 }
 
-.simplebar-track.simplebar-vertical {
-	width: 2px;
-	background: #d9d9d9;
-	right: -9px;
-}
-.simplebar-track.simplebar-horizontal {
-	height: 2px;
-	background: #d9d9d9;
-	bottom: -10px;
-}
-.simplebar-scrollbar {
-	width: 2px;
-	background: var(--green-color);
-}
-
 .switch {
 	position: relative;
 	display: inline-block;
